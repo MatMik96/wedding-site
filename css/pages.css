@@ -1,0 +1,36 @@
+.hero-small {
+  min-height: 55vh;
+}
+
+.hero-content-small {
+  margin-top: 12vh;
+  max-width: 720px;
+}
+
+.page-title {
+  font-family: "Playfair Display", serif;
+  font-weight: 600;
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  margin: 0.4rem 0 0.6rem;
+}
+
+.page-sub {
+  max-width: 720px;
+  line-height: 1.6;
+}
+
+.card {
+  margin-top: 1.2rem;
+  max-width: 900px;
+  padding: 1.2rem 1.2rem;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.45);
+  border: 1px solid rgba(201, 164, 90, 0.25);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+  font-family: "Playfair Display", serif;
+  margin-bottom: 0.4rem;
+  color: var(--accent);
+}

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rasmine & Mathias – Bryllup</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/paws.css" />
+  <link rel="stylesheet" href="css/petals.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Great+Vibes&display=swap" rel="stylesheet">
+</head>
+
+<body class="page-home">
+  <div id="petal-container" aria-hidden="true"></div>
+
+  <header class="hero" id="top">
+    <div data-include="header"></div>
+
+    <section class="hero-content">
+      <p class="hero-kicker">Save the date</p>
+      <h1 class="hero-names">Rasmine &amp; Mathias</h1>
+      <p class="hero-text">skal giftes</p>
+      <p class="hero-date">d. 21.–23. august 2026 · Sebber Kloster i Nibe</p>
+
+      <div class="countdown" id="countdown">
+        <div class="countdown-item">
+          <span id="cd-days">0</span><small>dage</small>
+        </div>
+        <div class="countdown-item">
+          <span id="cd-hours">0</span><small>timer</small>
+        </div>
+        <div class="countdown-item">
+          <span id="cd-minutes">0</span><small>minutter</small>
+        </div>
+        <div class="countdown-item">
+          <span id="cd-seconds">0</span><small>sekunder</small>
+        </div>
+      </div>
+
+      <a href="#rsvp" class="btn-primary">Tilmeld dig brylluppet</a>
+    </section>
+  </header>
+
+  <main>
+    <section id="rsvp" class="section section-alt">
+      <h2>Tilmelding (RSVP)</h2>
+      <p>Udfyld venligst formularen nedenfor med information om deltagelse, allergier og andre praktiske ting.</p>
+
+      <div class="form-container">
+        <iframe
+          src="https://docs.google.com/forms/d/e/1FAIpQLSeeWXjvxRUvMKhXLQ8vTffbrLPR1hq3BWnaOHM8xsRHT5bsEQ/viewform?embedded=true"
+          width="640"
+          height="1503"
+          frameborder="0"
+          marginheight="0"
+          marginwidth="0">Indlæser…</iframe>
+      </div>
+    </section>
+
+    <section class="section" id="kort">
+      <h2>Her ligger Sebber Kloster</h2>
+      <p>Få et overblik over området og planlæg din transport.</p>
+
+      <div class="map-container">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2175.2353473343687!2d9.534245877324086!3d56.96190099822039!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46493f2a6f1da449%3A0xc566228b7fffb4f4!2sSebber%20Kloster!5e0!3m2!1sda!2sdk!4v1765358252081!5m2!1sda!2sdk"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen></iframe>
+      </div>
+    </section>
+
+    <section id="galleri" class="section section-alt">
+      <h2>Billeder fra weekenden</h2>
+      <p>Billeder bliver tilføjet her efter bryllupsweekenden.</p>
+
+      <div class="photo-gallery">
+        <!-- Later: your thumbnails go here -->
+      </div>
+    </section>
+  </main>
+
+  <div data-include="footer"></div>
+
+  <script src="js/transitions.js"></script>
+  <script src="js/countdown.js"></script>
+  <script src="js/paws.js"></script>
+  <script src="js/petals.js"></script>
+</body>
+</html>

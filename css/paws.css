@@ -1,0 +1,220 @@
+/* =====================
+   PAW PRINTS (BASE)
+===================== */
+
+.paw-print {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 20;
+
+  /* Start invisible – revealed by animation */
+  opacity: 0;
+
+  background-image: url("../images/paw-print.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  /* Small shadow for depth (NOT blur) */
+  filter: drop-shadow(0 0 2px rgba(0,0,0,0.25));
+
+  /* Fade in → stay → fade out */
+  animation: pawReveal 5s ease-out forwards;
+  transform-origin: 50% 50%;
+}
+
+/* =====================
+   PAW REVEAL ANIMATION
+   (NO BLUR → crisp paws)
+===================== */
+
+@keyframes pawReveal {
+  0%   { opacity: 0; }
+  20%  { opacity: 1; }
+  70%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* =====================
+   GLOW HALO (behind paw)
+===================== */
+
+.paw-print::before {
+  content: "";
+  position: absolute;
+  inset: -14px;              /* halo size */
+  border-radius: 50%;
+
+  opacity: 0;
+  pointer-events: none;
+
+  /* Golden magical glow */
+  background: radial-gradient(
+    circle,
+    rgba(255, 249, 236, 0.95) 0%,
+    rgba(201,164,90,0.55) 35%,
+    rgba(250,224,173,0.0) 70%
+  );
+
+  filter: blur(8px);
+  transform: scale(0.7);
+}
+
+/* =====================
+   ACTIVE GLOW STATE
+===================== */
+
+.paw-print.paw-glow::before {
+  opacity: 1;
+  transform: scale(1.05);
+  transition:
+    opacity 140ms ease-out,
+    transform 220ms ease-out;
+}
+
+/* Extra sparkle on the paw itself */
+.paw-print.paw-glow {
+  filter:
+    drop-shadow(0 0 6px rgba(201,164,90,0.9))
+    drop-shadow(0 0 18px rgba(201,164,90,0.6));
+}
+
+/* =====================
+   CAT SPIRIT
+===================== */
+
+.cat-spirit {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+
+  pointer-events: none;
+  z-index: 9999;
+
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.9);
+  filter: drop-shadow(0 18px 30px rgba(0,0,0,0.25));
+
+  animation: spiritPop 2.6s ease-out forwards;
+}
+
+/* Soft aura behind the cat */
+.cat-spirit::after {
+  content: "";
+  position: absolute;
+  inset: -22px;
+  border-radius: 50%;
+
+  background: radial-gradient(circle, rgba(201,164,90,0.22), transparent 60%);
+  filter: blur(8px);
+  opacity: 0.9;
+}
+
+/* Cat fade in → linger → fade out */
+@keyframes spiritPop {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.82); }
+  18%  { opacity: 1; transform: translate(-50%, -50%) scale(1.02); }
+  75%  { opacity: 1; transform: translate(-50%, -52%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -58%) scale(0.96); }
+}
+
+/* =====================
+   PAW MESSAGE (MYSTICAL)
+   - positioned ABSOLUTE (page coords)
+===================== */
+
+.paw-message {
+  position: absolute;      /* ✅ page coords, doesn't follow scroll */
+  z-index: 10000;
+  pointer-events: none;
+
+  font-family: "Playfair Display", serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+
+  padding: 0.7rem 1.05rem;
+  border-radius: 16px;
+
+  /* parchment + faint "mist" */
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255,255,255,0.95), rgba(255,249,236,0.90) 42%, rgba(242,228,205,0.92)),
+    linear-gradient(180deg, rgba(255,255,255,0.25), rgba(0,0,0,0));
+
+  color: rgba(70, 42, 32, 0.95);
+
+  border: 1px solid rgba(201,164,90,0.55);
+  box-shadow:
+    0 10px 26px rgba(0,0,0,0.16),
+    0 0 26px rgba(201,164,90,0.18);
+
+  /* Start hidden, animate in/out */
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.92);
+  animation: spiritWhisper 2.3s ease-out forwards;
+
+  /* helps when it overlaps complex backgrounds */
+  backdrop-filter: blur(4px);
+}
+
+/* soft golden aura behind */
+.paw-message::before {
+  content: "";
+  position: absolute;
+  inset: -10px;
+  border-radius: 18px;
+  background: radial-gradient(circle, rgba(201,164,90,0.22), transparent 65%);
+  filter: blur(10px);
+  opacity: 0.9;
+}
+
+/* little "tail" */
+.paw-message::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -9px;
+  width: 16px;
+  height: 16px;
+  transform: translateX(-50%) rotate(45deg);
+  background: rgba(255,249,236,0.90);
+  border-right: 1px solid rgba(201,164,90,0.35);
+  border-bottom: 1px solid rgba(201,164,90,0.35);
+  filter: blur(0.1px);
+}
+
+/* adds a subtle "ink shimmer" across the box */
+.paw-message .whisper {
+  position: relative;
+  display: inline-block;
+}
+
+.paw-message .whisper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent, rgba(201,164,90,0.22), transparent);
+  transform: translateX(-120%);
+  animation: shimmer 1.2s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0%   { transform: translateX(-120%); opacity: 0; }
+  30%  { opacity: 1; }
+  100% { transform: translateX(120%); opacity: 0; }
+}
+
+/* whisper motion (tiny drift + fade) */
+@keyframes spiritWhisper {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.88); filter: blur(1px); }
+  18%  { opacity: 1; transform: translate(-50%, -58%) scale(1.02); filter: blur(0px); }
+  75%  { opacity: 1; transform: translate(-50%, -62%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -76%) scale(0.98); filter: blur(0.7px); }
+}

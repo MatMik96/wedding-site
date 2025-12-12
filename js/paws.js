@@ -1,0 +1,225 @@
+  /* =====================
+     CONFIG
+  ===================== */
+  const isMainPage = document.body.classList.contains("page-home");
+
+  const CATS = 2;
+  const MIN_DELAY = isMainPage ? 9000 : 18000; // minimum amount of time before a cat can start a trail
+  const MAX_DELAY = isMainPage ? 18000 : 30000; // maximum amount of time before a cat can start a trail
+
+  // Each cat has 3 images we rotate through
+  const CAT_SPIRITS = {
+    aslak: {
+      images: ["/images/Aslak1.png", "/images/Aslak2.png", "/images/Aslak3.png"],
+      imageIndex: 0,
+      messages: [
+        "Aslak var her 🐾",
+        "Mjav…",
+        "Jeg holder øje med jer"
+      ]
+    },
+    dracula: {
+      images: ["/images/Dracula1.png", "/images/Dracula2.png", "/images/Dracula3.png"],
+      imageIndex: 0,
+      messages: [
+        "Dracula våger…",
+        "I er ikke alene",
+        "Mørket ser alt"
+      ]
+    }
+  };
+
+  const FAIL_MESSAGES = [
+    "Prøv igen 🐾",
+    "Bedre held næste gang",
+    "Det var kattens…",
+    "Så katte ikke blive bedre!"
+  ];
+
+  /* =====================
+     STATE
+  ===================== */
+
+  const lastPawByCat = {
+    aslak: null,
+    dracula: null
+  };
+
+  function random(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  function chance(probability) {
+    return Math.random() < probability;
+  }
+
+  function scheduleNextTrail(catIndex) {
+    setTimeout(() => spawnTrail(catIndex), random(MIN_DELAY, MAX_DELAY));
+  }
+
+  /* =====================
+     UI HELPERS
+  ===================== */
+
+  // Keep track of the currently visible message per cat
+const activeMessageByCat = { aslak: null, dracula: null };
+
+function showMessage(catId, text, pageX, pageY) {
+  // If there's already a message for this cat, remove it first (no stacking)
+  const old = activeMessageByCat[catId];
+  if (old) old.remove();
+
+  const el = document.createElement("div");
+  el.className = "paw-message";
+
+  // Wrap text so we can shimmer the "ink" effect
+  const span = document.createElement("span");
+  span.className = "whisper";
+  span.textContent = text;
+  el.appendChild(span);
+
+  // Position uses PAGE COORDS (absolute on the document)
+  el.style.left = `${pageX}px`;
+  el.style.top = `${pageY}px`;
+
+  document.body.appendChild(el);
+  activeMessageByCat[catId] = el;
+
+  // When animation ends, clean up reference
+  setTimeout(() => {
+    if (activeMessageByCat[catId] === el) activeMessageByCat[catId] = null;
+    el.remove();
+  }, 2300);
+}
+
+
+  function showCatSpirit(catId) {
+    const cat = CAT_SPIRITS[catId];
+    const last = lastPawByCat[catId];
+    if (!cat || !last) return;
+
+    // rotate image
+    const img = cat.images[cat.imageIndex];
+    cat.imageIndex = (cat.imageIndex + 1) % cat.images.length;
+
+    const message = cat.messages[Math.floor(Math.random() * cat.messages.length)];
+
+    const x = last.x;       // page X
+    const y = last.y;       // page Y (NOT minus scroll)
+
+    el.style.left = `${x}px`;
+    el.style.top  = `${y}px`;
+
+
+    const el = document.createElement("div");
+    el.className = "cat-spirit";
+    el.style.backgroundImage = `url("${img}")`;
+    el.style.left = `${x}px`;
+    el.style.top = `${y}px`;
+
+    document.body.appendChild(el);
+
+    // x is already pageX, y is viewportY; convert back to pageY
+    const pageY = (y + window.scrollY) - 120;
+    showMessage(catId, message, x, pageY);
+
+
+    setTimeout(() => el.remove(), 2600);
+  }
+
+  function glowTrailProgressively(catId) {
+    const paws = Array.from(
+      document.querySelectorAll(`.paw-print[data-cat="${catId}"]`)
+    );
+
+    paws.forEach((paw, index) => {
+      setTimeout(() => {
+        paw.classList.add("paw-glow");
+        setTimeout(() => paw.classList.remove("paw-glow"), 700);
+      }, index * 90);
+    });
+  }
+
+  /* =====================
+     CLICK HANDLER
+  ===================== */
+
+  document.addEventListener("click", (e) => {
+  const paw = e.target.closest(".paw-print");
+  if (!paw) return;
+
+  const catId = paw.dataset.cat;
+  if (!catId) return;
+
+  // Use PAGE coordinates so message stays anchored to the document
+  const pageX = e.pageX;
+  const pageY = e.pageY - 40;
+
+  // 1/3 chance cat appears
+  if (!chance(0.33)) {
+    const failText = FAIL_MESSAGES[Math.floor(Math.random() * FAIL_MESSAGES.length)];
+    showMessage(catId, failText, pageX, pageY);
+    return;
+  }
+
+  glowTrailProgressively(catId);
+  showCatSpirit(catId);
+});
+
+
+  /* =====================
+     SPAWN TRAILS
+  ===================== */
+
+  function spawnTrail(catIndex) {
+    const catId = catIndex === 0 ? "aslak" : "dracula";
+    const steps = Math.floor(random(6, 12));
+
+    let x = random(80, window.innerWidth - 120);
+    let y = window.scrollY + random(80, window.innerHeight - 220);
+
+    let angle = random(0, Math.PI * 2);
+    const turnStrength = random(0.25, 1.45);
+    const baseStepSize = random(26, 38);
+    const baseDelay = random(160, 720);
+
+    let delayAccum = 0;
+    let left = true;
+
+    for (let i = 0; i < steps; i++) {
+      const lateral = (left ? -1 : 1) * random(3, 7);
+      const stepX = x + Math.cos(angle + Math.PI / 2) * lateral;
+      const stepY = y + Math.sin(angle + Math.PI / 2) * lateral;
+
+      const rotationDeg = angle * 180 / Math.PI + 90 + (left ? -6 : 6);
+      delayAccum += Math.max(100, baseDelay + random(-60, 120));
+
+      setTimeout(() => {
+        const paw = document.createElement("div");
+        paw.className = "paw-print";
+        paw.dataset.cat = catId;
+
+        paw.style.left = `${stepX}px`;
+        paw.style.top = `${stepY}px`;
+        paw.style.transform = `rotate(${rotationDeg}deg)`;
+
+        document.body.appendChild(paw);
+
+        lastPawByCat[catId] = { x: stepX, y: stepY };
+
+        setTimeout(() => paw.remove(), 5200);
+      }, delayAccum);
+
+      angle += (Math.random() - 0.5) * turnStrength;
+      const stepSize = baseStepSize + random(-4, 6);
+
+      x += Math.cos(angle) * stepSize;
+      y += Math.sin(angle) * stepSize;
+      left = !left;
+    }
+
+    scheduleNextTrail(catIndex);
+  }
+
+  scheduleNextTrail(0);
+  scheduleNextTrail(1);

@@ -1,0 +1,7 @@
+Debug:
+In terminal write:
+python -m http.server 8000
+
+Type in "http://localhost:8000/index.html" in a browser
+
+Now we can see the site 
