@@ -218,3 +218,34 @@
   75%  { opacity: 1; transform: translate(-50%, -62%) scale(1); }
   100% { opacity: 0; transform: translate(-50%, -76%) scale(0.98); filter: blur(0.7px); }
 }
+
+/* =====================
+   PAWS: PHONE SCALE
+===================== */
+@media (max-width: 600px) {
+  .paw-print {
+    width: 22px;
+    height: 22px;
+  }
+
+  .paw-print::before {
+    inset: -10px; /* smaller halo */
+    filter: blur(7px);
+  }
+
+  .cat-spirit {
+    width: 160px;
+    height: 160px;
+  }
+
+  .cat-spirit::after {
+    inset: -16px;
+  }
+
+  .paw-message {
+    font-size: 0.88rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: 14px;
+    max-width: 78vw; /* prevents super wide bubbles */
+  }
+}

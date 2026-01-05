@@ -18,3 +18,14 @@
 
   filter: blur(0.3px);
 }
+
+/* =====================
+   PETALS: PHONE SCALE
+===================== */
+@media (max-width: 600px) {
+  .petal {
+    width: 18px;
+    height: 18px;
+    opacity: 0.85;
+  }
+}

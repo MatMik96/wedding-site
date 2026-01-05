@@ -7,27 +7,29 @@
   const MIN_DELAY = isMainPage ? 9000 : 18000; // minimum amount of time before a cat can start a trail
   const MAX_DELAY = isMainPage ? 18000 : 30000; // maximum amount of time before a cat can start a trail
 
-  // Each cat has 3 images we rotate through
-  const CAT_SPIRITS = {
-    aslak: {
-      images: ["/images/Aslak1.png", "/images/Aslak2.png", "/images/Aslak3.png"],
-      imageIndex: 0,
-      messages: [
-        "Aslak var her 🐾",
-        "Mjav…",
-        "Jeg holder øje med jer"
-      ]
-    },
-    dracula: {
-      images: ["/images/Dracula1.png", "/images/Dracula2.png", "/images/Dracula3.png"],
-      imageIndex: 0,
-      messages: [
-        "Dracula våger…",
-        "I er ikke alene",
-        "Mørket ser alt"
-      ]
-    }
-  };
+ const CAT_SPIRITS = {
+  aslak: {
+    images: [
+      "/images/Aslak1.png",
+      "/images/Aslak2.png",
+      "/images/Aslak3.png"
+    ],
+    imageIndex: 0,
+    messages: ["Aslak var her 🐾", "Mjav…", "Jeg holder øje med jer"]
+  },
+  dracula: {
+    images: [
+      "/images/Dracula1.png",
+      "/images/Dracula2.png",
+      "/images/Dracula3.png"
+    ],
+    imageIndex: 0,
+    messages: ["Dracula våger…", "I er ikke alene", "Mørket ser alt"]
+  }
+};
+
+
+
 
   const FAIL_MESSAGES = [
     "Prøv igen 🐾",
@@ -92,40 +94,45 @@ function showMessage(catId, text, pageX, pageY) {
   }, 2300);
 }
 
+function showCatSpirit(catId) {
+  const cat = CAT_SPIRITS[catId];
+  const last = lastPawByCat[catId];
+  if (!cat || !last) return;
 
-  function showCatSpirit(catId) {
-    const cat = CAT_SPIRITS[catId];
-    const last = lastPawByCat[catId];
-    if (!cat || !last) return;
+  // Pick next image (cycle through 1/2/3)
+  const img = cat.images[cat.imageIndex];
+  cat.imageIndex = (cat.imageIndex + 1) % cat.images.length;
 
-    // rotate image
-    const img = cat.images[cat.imageIndex];
-    cat.imageIndex = (cat.imageIndex + 1) % cat.images.length;
+  // Pick a random “spirit line”
+  const message = cat.messages[Math.floor(Math.random() * cat.messages.length)];
 
-    const message = cat.messages[Math.floor(Math.random() * cat.messages.length)];
+  // last.x / last.y are PAGE coordinates (because paw top uses window.scrollY)
+  const x = last.x;
+  const y = last.y;
 
-    const x = last.x;       // page X
-    const y = last.y;       // page Y (NOT minus scroll)
+  // --- CAT POPUP (ABSOLUTE / PAGE COORDS) ---
+  const el = document.createElement("div");
+  el.className = "cat-spirit";
+  el.style.backgroundImage = `url("${img}")`;
 
-    el.style.left = `${x}px`;
-    el.style.top  = `${y}px`;
+  // Place near the last paw so it "belongs" to the trail
+  // Small offset so it doesn't cover the paw completely
+  const offsetX = 80;
+  const offsetY = -60;
 
+  el.style.left = `${x + offsetX}px`;
+  el.style.top = `${y + offsetY}px`;
 
-    const el = document.createElement("div");
-    el.className = "cat-spirit";
-    el.style.backgroundImage = `url("${img}")`;
-    el.style.left = `${x}px`;
-    el.style.top = `${y}px`;
+  document.body.appendChild(el);
 
-    document.body.appendChild(el);
+  // --- MESSAGE (ABSOLUTE / PAGE COORDS) ---
+  // Keep the message near the cat
+  showMessage(catId, message, x + offsetX, y + offsetY - 120);
 
-    // x is already pageX, y is viewportY; convert back to pageY
-    const pageY = (y + window.scrollY) - 120;
-    showMessage(catId, message, x, pageY);
+  // Cleanup
+  setTimeout(() => el.remove(), 2600);
+}
 
-
-    setTimeout(() => el.remove(), 2600);
-  }
 
   function glowTrailProgressively(catId) {
     const paws = Array.from(
