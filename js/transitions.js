@@ -37,3 +37,23 @@ loadIncludes().then(() => {
   setupTransitions();
   window.dispatchEvent(new Event("componentsLoaded"));
 });
+
+// ----- Reveal on scroll -----
+function setupRevealOnScroll() {
+  const els = document.querySelectorAll(".reveal-on-scroll");
+  if (!els.length) return;
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        e.target.classList.add("is-visible");
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.18 });
+
+  els.forEach(el => io.observe(el));
+}
+
+window.addEventListener("componentsLoaded", setupRevealOnScroll);
+document.addEventListener("DOMContentLoaded", setupRevealOnScroll);
