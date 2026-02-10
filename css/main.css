@@ -365,7 +365,7 @@ body {
 /* =====================
    PHONE RESPONSIVE
 ===================== */
-@media (max-width: 600px) {
+@media (max-width: 650px) {
   /* iOS Safari often hates background-attachment: fixed */
   .hero {
     background-image: url("/images/baggrundSmall.png");
