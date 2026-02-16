@@ -231,8 +231,9 @@ body {
   width: 100%;
   border: 0;
   border-radius: 12px;
-  background: rgba(255,255,255,0.35);
   box-shadow: var(--shadow);
+  min-height: 1000px;
+  background: white;
 }
 
 /* ---------- MAP ---------- */
