@@ -28,9 +28,6 @@
   }
 };
 
-
-
-
   const FAIL_MESSAGES = [
     "Prøv igen 🐾",
     "Bedre held næste gang",
@@ -46,6 +43,17 @@
     aslak: null,
     dracula: null
   };
+
+  function preloadCatImages() {
+    Object.values(CAT_SPIRITS).forEach(cat => {
+      cat.images.forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
+    });
+  }
+
+preloadCatImages();
 
   function random(min, max) {
     return Math.random() * (max - min) + min;
@@ -120,14 +128,33 @@ function showCatSpirit(catId) {
   const offsetX = 80;
   const offsetY = -60;
 
-  el.style.left = `${x + offsetX}px`;
-  el.style.top = `${y + offsetY}px`;
+  let centerX = x + offsetX;
+  let centerY = y + offsetY;
+
+  // Detect actual cat size (responsive!)
+  const catSize = window.innerWidth <= 600 ? 160 : 240;
+  const half = catSize / 2;
+  const padding = 12;
+
+  // Viewport bounds in PAGE coordinates
+  const minX = window.scrollX + half + padding;
+  const maxX = window.scrollX + window.innerWidth - half - padding;
+
+  const minY = window.scrollY + half + padding;
+  const maxY = window.scrollY + window.innerHeight - half - padding;
+
+  // Clamp center position
+  centerX = Math.max(minX, Math.min(centerX, maxX));
+  centerY = Math.max(minY, Math.min(centerY, maxY));
+
+  el.style.left = `${centerX}px`;
+  el.style.top  = `${centerY}px`;
 
   document.body.appendChild(el);
 
   // --- MESSAGE (ABSOLUTE / PAGE COORDS) ---
   // Keep the message near the cat
-  showMessage(catId, message, x + offsetX, y + offsetY - 120);
+  showMessage(catId, message, centerX, centerY - catSize * 0.6);
 
   // Cleanup
   setTimeout(() => el.remove(), 2600);

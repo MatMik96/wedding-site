@@ -32,11 +32,14 @@ body {
   padding: 2rem 8vw 4rem;
   display: flex;
   flex-direction: column;
-
+  /*
   background:
     linear-gradient(to bottom right, rgba(212, 179, 140, 0.65), rgba(209, 170, 125, 0.65)),
-    url("../images/baggrund.png") center/cover no-repeat;
-
+    url("../images/baggrund.png") center/cover no-repeat;*/
+  background-image: url("/images/baggrund.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   background-attachment: fixed;
   position: relative;
   overflow: hidden;
@@ -390,8 +393,6 @@ body {
   /* iOS Safari often hates background-attachment: fixed */
   .hero {
     background-image: url("/images/baggrundSmall.png");
-    background-size: cover;
-    background-position: center;
     background-attachment: scroll;
     padding: 1.25rem 6vw 2.5rem;
     min-height: 92vh;
