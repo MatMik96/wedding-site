@@ -87,8 +87,6 @@ body {
     box-shadow 0.2s ease;
 }
 
-
-
 .nav-links a:hover {
   background: rgba(255,255,255,0.65);
   transform: translateY(-2px);
@@ -97,7 +95,7 @@ body {
 
 .nav-cta {
   background: var(--accent);
-  color: white !important;
+  color: rgba(255, 229, 229, 0.18);
   border: 1px solid rgba(0,0,0,0.05);
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
@@ -276,13 +274,22 @@ body {
 }
 
 /* ---------- GALLERY ---------- */
-.photo-gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1.2rem;
-  margin-top: 2rem;
-  max-width: 980px;
+.photo-gallery img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
 }
+
+.photo-gallery img:hover {
+  transform: scale(1.03);
+  box-shadow: 0 16px 32px rgba(0,0,0,0.15);
+}
+
+
 
 /* ---------- FOOTER ---------- */
 .footer {
