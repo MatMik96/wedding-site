@@ -1,17 +1,40 @@
+// ===============================
+// Dynamic Includes Loader
+// ===============================
 async function loadIncludes() {
-  const headerTarget = document.querySelector('[data-include="header"]');
-  const footerTarget = document.querySelector('[data-include="footer"]');
+  const includeElements = document.querySelectorAll("[data-include]");
 
-  if (headerTarget) {
-    const header = await fetch("/components/header.html").then(r => r.text());
-    headerTarget.innerHTML = header;
-  }
-  if (footerTarget) {
-    const footer = await fetch("/components/footer.html").then(r => r.text());
-    footerTarget.innerHTML = footer;
-  }
+  const promises = Array.from(includeElements).map(async (el) => {
+    const name = el.dataset.include;
+
+    // Determine path
+    let path;
+
+    if (name === "header" || name === "footer") {
+      path = `/components/${name}.html`;
+    } else {
+      path = `/partials/${name}.html`;
+    }
+
+    try {
+      const html = await fetch(path).then(r => {
+        if (!r.ok) throw new Error(`Failed to load ${path}`);
+        return r.text();
+      });
+
+      el.innerHTML = html;
+    } catch (err) {
+      console.error(err);
+      el.innerHTML = `<!-- Failed to load ${name} -->`;
+    }
+  });
+
+  await Promise.all(promises);
 }
 
+// ===============================
+// Page Transitions
+// ===============================
 function setupTransitions() {
   document.addEventListener("click", (e) => {
     const a = e.target.closest("a[data-nav]");
@@ -22,32 +45,33 @@ function setupTransitions() {
 
     document.body.style.transition = "opacity 0.3s ease";
     document.body.style.opacity = "0";
-    setTimeout(() => (window.location.href = url), 300);
+
+    setTimeout(() => {
+      window.location.href = url;
+    }, 300);
   });
 
   // Fade in on load
   document.body.style.opacity = "0";
+
   requestAnimationFrame(() => {
     document.body.style.transition = "opacity 0.3s ease";
     document.body.style.opacity = "1";
   });
 }
 
-loadIncludes().then(() => {
-  setupTransitions();
-  window.dispatchEvent(new Event("componentsLoaded"));
-});
-
-// ----- Reveal on scroll -----
+// ===============================
+// Reveal On Scroll
+// ===============================
 function setupRevealOnScroll() {
   const els = document.querySelectorAll(".reveal-on-scroll");
   if (!els.length) return;
 
   const io = new IntersectionObserver((entries) => {
-    entries.forEach((e) => {
-      if (e.isIntersecting) {
-        e.target.classList.add("is-visible");
-        io.unobserve(e.target);
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+        io.unobserve(entry.target);
       }
     });
   }, { threshold: 0.18 });
@@ -55,5 +79,15 @@ function setupRevealOnScroll() {
   els.forEach(el => io.observe(el));
 }
 
-window.addEventListener("componentsLoaded", setupRevealOnScroll);
+// ===============================
+// Init Sequence
+// ===============================
+loadIncludes().then(() => {
+  setupTransitions();
+  setupRevealOnScroll();
+
+  // Notify other scripts (petals, etc.)
+  window.dispatchEvent(new Event("componentsLoaded"));
+});
+
 document.addEventListener("DOMContentLoaded", setupRevealOnScroll);

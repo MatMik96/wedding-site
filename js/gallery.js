@@ -1,69 +1,90 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const GALLERY_FEED_URL = "https://script.google.com/macros/s/AKfycbxMZjMJC2ZUIVjRl6x8UILk9L95e6SSURG4wDf8-zk5fob7eltPLAbpjD79JqTjBQu70Q/exec";
+(() => {
+  const CONFIG = {
+    FEED_URL: "https://script.google.com/macros/s/AKfycbxMZjMJC2ZUIVjRl6x8UILk9L95e6SSURG4wDf8-zk5fob7eltPLAbpjD79JqTjBQu70Q/exec",
+    BATCH_SIZE: 12
+  };
 
-  const galleryEl = document.querySelector(".photo-gallery");
-  const statusEl = document.getElementById("galleryStatus");
+  const state = {
+    allImages: [],
+    filtered: [],
+    eventsByDay: {},
+    activeDay: null,
+    activeEvent: null,
+    currentIndex: 0,
+    rendered: 0
+  };
 
-  const dayButtons = Array.from(document.querySelectorAll("[data-day]"));
-  const eventContainer = document.getElementById("eventControls");
+  let elements = {};
 
-  const lightbox = document.getElementById("lightbox");
-  const lbImage = document.querySelector(".lb-image");
-  const prevBtn = document.querySelector(".lb-prev");
-  const nextBtn = document.querySelector(".lb-next");
-  const closeBtn = document.querySelector(".lb-close");
+  document.addEventListener("DOMContentLoaded", init);
 
-  let downloadBtn = document.querySelector(".lb-download");
-  if (!downloadBtn) {
-    downloadBtn = document.createElement("a");
-    downloadBtn.className = "lb-download";
-    downloadBtn.textContent = "Download";
-    downloadBtn.setAttribute("download", "");
-    lightbox.appendChild(downloadBtn);
+  function init() {
+    cacheElements();
+    attachGlobalEvents();
+    loadGallery();
   }
 
-  let allImages = []; // [{day, event, url, downloadUrl, name}]
-  let eventsByDay = {}; // { dayKey: [{key,label}] }
-  let filtered = [];
-  let activeDay = null;
-  let activeEvent = null;
-  let currentIndex = 0;
+  function cacheElements() {
+    elements.gallery = document.querySelector(".photo-gallery");
+    elements.status = document.getElementById("galleryStatus");
+    elements.dayButtons = Array.from(document.querySelectorAll("[data-day]"));
+    elements.eventContainer = document.getElementById("eventControls");
 
-  function setStatus(msg) {
-    if (statusEl) statusEl.textContent = msg;
+    elements.lightbox = document.getElementById("lightbox");
+    elements.lbImage = document.querySelector(".lb-image");
+    elements.prevBtn = document.querySelector(".lb-prev");
+    elements.nextBtn = document.querySelector(".lb-next");
+    elements.closeBtn = document.querySelector(".lb-close");
   }
 
-  function normalizeKey(name) {
-    return name
-      .replace(/^\d+\s*[-_ ]\s*/g, "")
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, "-");
+  function attachGlobalEvents() {
+    elements.dayButtons.forEach(btn => {
+      btn.addEventListener("click", () => selectDay(btn.dataset.day));
+    });
+
+    elements.nextBtn.addEventListener("click", () => showImage(state.currentIndex + 1));
+    elements.prevBtn.addEventListener("click", () => showImage(state.currentIndex - 1));
+    elements.closeBtn.addEventListener("click", closeLightbox);
+
+    document.addEventListener("keydown", e => {
+      if (!elements.lightbox.classList.contains("active")) return;
+      if (e.key === "ArrowRight") showImage(state.currentIndex + 1);
+      if (e.key === "ArrowLeft") showImage(state.currentIndex - 1);
+      if (e.key === "Escape") closeLightbox();
+    });
   }
 
-  // For nicer button labels from folder names
-  function prettyLabel(name) {
-    return name.replace(/^\d+\s*[-_ ]\s*/g, "").trim();
-  }
-
-  async function loadFeed() {
+  async function loadGallery() {
     setStatus("Indlæser billeder…");
-    const res = await fetch(GALLERY_FEED_URL, { cache: "no-store" });
-    if (!res.ok) throw new Error(`Feed error: ${res.status}`);
-    return await res.json();
+    try {
+      const feed = await fetchFeed();
+      const { images, eventsByDay } = flattenFeed(feed);
+      state.allImages = images;
+      state.eventsByDay = eventsByDay;
+      renderGallery();
+    } catch (err) {
+      console.error(err);
+      setStatus("Kunne ikke indlæse billeder.");
+    }
   }
 
-  function flattenAndIndex(feed) {
+  async function fetchFeed() {
+    const res = await fetch(CONFIG.FEED_URL + "?t=" + Date.now());
+    if (!res.ok) throw new Error("Feed error");
+    return res.json();
+  }
+
+  function flattenFeed(feed) {
     const images = [];
     const map = {};
 
     for (const d of feed.days || []) {
-      const dayKey = normalizeKey(d.day);
+      const dayKey = normalize(d.day);
       map[dayKey] = [];
 
       for (const e of d.events || []) {
-        const eventKey = normalizeKey(e.event);
-        map[dayKey].push({ key: eventKey, label: prettyLabel(e.event) });
+        const eventKey = normalize(e.event);
+        map[dayKey].push({ key: eventKey, label: cleanLabel(e.event) });
 
         for (const img of e.images || []) {
           images.push({
@@ -72,167 +93,90 @@ document.addEventListener("DOMContentLoaded", () => {
             thumbUrl: img.thumbUrl,
             fullUrl: img.fullUrl,
             downloadUrl: img.downloadUrl,
-            name: img.name,
+            name: img.name
           });
         }
       }
-
-      // stable order by folder label
-      map[dayKey].sort((a, b) => a.label.localeCompare(b.label, "da", { numeric: true }));
     }
 
     return { images, eventsByDay: map };
   }
 
-  function applyActiveDayStyles() {
-    dayButtons.forEach(b => b.classList.toggle("active", b.dataset.day === activeDay));
+  function selectDay(day) {
+    state.activeDay = state.activeDay === day ? null : day;
+    state.activeEvent = null;
+    filterImages();
+    renderGallery();
   }
 
-  function buildEventButtonsForDay(dayKey) {
-    eventContainer.innerHTML = "";
-
-    const events = eventsByDay[dayKey] || [];
-    if (!events.length) {
-      const hint = document.createElement("div");
-      hint.style.opacity = "0.7";
-      hint.style.fontSize = "0.9rem";
-      hint.textContent = "Ingen kategorier fundet (endnu).";
-      eventContainer.appendChild(hint);
-      return;
-    }
-
-    events.forEach(({ key, label }) => {
-      const btn = document.createElement("button");
-      btn.dataset.event = key;
-      btn.textContent = label;
-
-      btn.addEventListener("click", () => {
-        // toggle
-        activeEvent = (activeEvent === key) ? null : key;
-
-        // active styling
-        Array.from(eventContainer.querySelectorAll("button")).forEach(b =>
-          b.classList.toggle("active", b.dataset.event === activeEvent)
-        );
-
-        filterList();
-        renderGallery();
-      });
-
-      eventContainer.appendChild(btn);
-    });
-  }
-
-  function filterList() {
-    filtered = allImages.filter(img => {
-      const okDay = !activeDay || img.day === activeDay;
-      const okEvent = !activeEvent || img.event === activeEvent;
-      return okDay && okEvent;
-    });
+  function filterImages() {
+    state.filtered = state.allImages.filter(img =>
+      (!state.activeDay || img.day === state.activeDay) &&
+      (!state.activeEvent || img.event === state.activeEvent)
+    );
   }
 
   function renderGallery() {
-    galleryEl.classList.add("is-fading");
+    elements.gallery.innerHTML = "";
+    state.rendered = 0;
 
-    setTimeout(() => {
-      galleryEl.innerHTML = "";
+    if (!state.activeDay) {
+      setStatus("Vælg en dag for at se billeder.");
+      return;
+    }
 
-      if (!activeDay) {
-        setStatus("Vælg en dag for at se billeder.");
-        galleryEl.classList.remove("is-fading");
-        return;
-      }
+    filterImages();
 
-      if (filtered.length === 0) {
-        setStatus("Ingen billeder i denne kategori endnu.");
-      } else {
-        setStatus(`${filtered.length} billeder`);
-      }
+    if (!state.filtered.length) {
+      setStatus("Ingen billeder i denne kategori endnu.");
+      return;
+    }
 
-      filtered.forEach((item, i) => {
-        const img = document.createElement("img");
-        img.loading = "lazy";
-        img.alt = item.name || "Billede";
-        img.src = item.thumbUrl;
-        img.dataset.index = String(i);
+    setStatus(`${state.filtered.length} billeder`);
+    renderBatch();
+  }
 
-        img.addEventListener("click", () => showImage(i));
-        galleryEl.appendChild(img);
-      });
+  function renderBatch() {
+    const slice = state.filtered.slice(state.rendered, state.rendered + CONFIG.BATCH_SIZE);
 
-      galleryEl.classList.remove("is-fading");
-    }, 160);
+    slice.forEach((item, i) => {
+      const img = document.createElement("img");
+      img.loading = "lazy";
+      img.src = item.thumbUrl;
+      img.alt = item.name || "Billede";
+
+      img.addEventListener("click", () => showImage(state.rendered + i));
+      elements.gallery.appendChild(img);
+    });
+
+    state.rendered += CONFIG.BATCH_SIZE;
+
+    if (state.rendered < state.filtered.length) {
+      setTimeout(renderBatch, 200);
+    }
   }
 
   function showImage(index) {
-    if (!filtered.length) return;
-    currentIndex = (index + filtered.length) % filtered.length;
-
-    const item = filtered[currentIndex];
-    lbImage.classList.add("swap");
-
-    setTimeout(() => {
-      lbImage.src = item.fullUrl;
-      downloadBtn.href = item.downloadUrl;
-      downloadBtn.setAttribute("download", item.name || "photo.jpg");
-      lbImage.classList.remove("swap");
-    }, 120);
-
-    lightbox.classList.add("active");
+    state.currentIndex = (index + state.filtered.length) % state.filtered.length;
+    const item = state.filtered[state.currentIndex];
+    elements.lbImage.src = item.fullUrl;
+    elements.lightbox.classList.add("active");
   }
 
-  function next() { showImage(currentIndex + 1); }
-  function prev() { showImage(currentIndex - 1); }
+  function closeLightbox() {
+    elements.lightbox.classList.remove("active");
+  }
 
-  nextBtn.addEventListener("click", next);
-  prevBtn.addEventListener("click", prev);
-  closeBtn.addEventListener("click", () => lightbox.classList.remove("active"));
-  lightbox.addEventListener("click", (e) => { if (e.target === lightbox) lightbox.classList.remove("active"); });
+  function setStatus(msg) {
+    if (elements.status) elements.status.textContent = msg;
+  }
 
-  document.addEventListener("keydown", (e) => {
-    if (!lightbox.classList.contains("active")) return;
-    if (e.key === "ArrowRight") next();
-    if (e.key === "ArrowLeft") prev();
-    if (e.key === "Escape") lightbox.classList.remove("active");
-  });
+  function normalize(name) {
+    return name.replace(/^\d+\s*[-_ ]\s*/g, "").trim().toLowerCase().replace(/\s+/g, "-");
+  }
 
-  // Day selection
-  dayButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      activeDay = (activeDay === btn.dataset.day) ? null : btn.dataset.day;
-      activeEvent = null;
+  function cleanLabel(name) {
+    return name.replace(/^\d+\s*[-_ ]\s*/g, "").trim();
+  }
 
-      applyActiveDayStyles();
-
-      if (activeDay) {
-        buildEventButtonsForDay(activeDay);
-      } else {
-        eventContainer.innerHTML = "";
-      }
-
-      filterList();
-      renderGallery();
-    });
-  });
-
-  // Init
-  (async () => {
-    try {
-      const feed = await loadFeed();
-      const indexed = flattenAndIndex(feed);
-      allImages = indexed.images;
-      eventsByDay = indexed.eventsByDay;
-
-      // Default day (optional): auto select Saturday/Lørdag
-      // activeDay = "lørdag";
-      // applyActiveDayStyles();
-      // buildEventButtonsForDay(activeDay);
-
-      filterList();
-      renderGallery();
-    } catch (err) {
-      console.error(err);
-      setStatus("Kunne ikke indlæse billeder lige nu.");
-    }
-  })();
-});
+})();
