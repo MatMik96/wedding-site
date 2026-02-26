@@ -47,8 +47,12 @@
 
   <main>
     <section class="section" id="kort">
-      <h2>Her ligger Sebber Kloster</h2>
-      <p>Få et overblik over området og planlæg din transport.</p>
+      <div class="container">
+
+        <h2 class="section-title">Her ligger Sebber Kloster</h2>
+          <p class="section-intro">
+            Få et overblik over området og planlæg din transport.
+        </p>
 
       <div class="map-container">
         <iframe
@@ -92,27 +96,42 @@
     </section>
 
     <section id="galleri" class="section section-alt">
-      <h2>Billeder fra weekenden</h2>
-      <p>Billeder bliver tilføjet her efter bryllupsweekenden.</p>
 
-      <div class="photo-gallery">
-        <img src="/images/gallery/Aslak1.png" alt="Demo 1">
-        <img src="/images/gallery/Aslak2.png" alt="Demo 2">
-        <img src="/images/gallery/Aslak3.png" alt="Demo 3">
-        <img src="/images/gallery/Dracula1.png" alt="Demo 4">
-        <img src="/images/gallery/Dracula2.png" alt="Demo 5">
-        <img src="/images/gallery/Dracula3.png" alt="Demo 6">
+      <div class="gallery-wrapper">
+        
+        <div class="gallery-header">
+          <h2>Billeder fra weekenden</h2>
+          <p>Billeder bliver tilføjet her efter bryllupsweekenden.</p>
+          <p class="gallery-status" id="galleryStatus">Indlæser billeder…</p>
+        </div>
+      
+        <div class="gallery-filter-block">
+          <span class="filter-label">Dag</span>
+          <div class="gallery-controls">
+            <button data-day="fredag">Fredag</button>
+            <button data-day="lørdag">Lørdag</button>
+            <button data-day="søndag">Søndag</button>
+          </div>
+
+          <div class="gallery-controls secondary" id="eventControls">
+            <!-- events will be inserted dynamically -->
+          </div>
+      
+        <div class="photo-gallery"></div>
+      
       </div>
     </section>
 
 
-      <section class="section">
-        <h2>🎶 Musik til dansegulvet</h2>
-        <p>
+    <section class="section">
+      <div class="container">
+      
+        <h2 class="section-title">🎶 Musik til dansegulvet</h2>
+        <p class="section-intro">
           Hvilken sang får dig op at danse? Tilføj den til vores playliste 💃🕺
         </p>
       
-        <div class="card" style="padding:2.5rem; text-align:center; margin-top:2rem;">
+        <div class="card music-card">
         
           <iframe
             style="border-radius:16px"
@@ -139,9 +158,17 @@
 
   <div data-include="footer"></div>
 
+  <div id="lightbox" class="lightbox">
+    <button class="lb-close">&times;</button>
+    <button class="lb-prev">&#10094;</button>
+    <img class="lb-image" src="">
+    <button class="lb-next">&#10095;</button>
+  </div>
+
   <script src="js/transitions.js"></script>
   <script src="js/countdown.js"></script>
   <script src="js/paws.js"></script>
   <script src="js/petals.js"></script>
+  <script src="js/gallery.js"></script>
 </body>
 </html>
