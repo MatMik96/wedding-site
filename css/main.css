@@ -302,15 +302,25 @@ body {
 }
 
 /* ---------- GALLERY WRAPPER ---------- */
+.gallery-description {
+  max-width: 820px;
+  margin: 0 auto 1.4rem auto;
+  text-align: center;
+  opacity: 0.9;
+}
+
 .gallery-status {
   text-align: center;
   margin-top: 0.6rem;
+  margin: 0 auto 1.4rem auto;
   font-size: 0.9rem;
   opacity: 0.8;
 }
+
 .gallery-wrapper {
   max-width: 1000px;
   margin: 0 auto;
+  align-items: center;
 }
 
 .gallery-header {
@@ -491,7 +501,6 @@ body {
 
 /*----------- MUSIC --------------*/
 .music-card {
-  max-width: 800px;
   margin: 2rem auto 0 auto;
   text-align: center;
   border: 0;
