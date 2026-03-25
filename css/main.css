@@ -517,6 +517,54 @@ body {
   background: rgba(255,255,255,0.25);
 }
 
+/* =====================
+   EASTER EGG: THE MAGICAL &
+===================== */
+#secret-amp {
+  display: inline-block;
+  cursor: pointer; /* Changes the mouse to a pointing finger */
+  animation: pulseGold 5s infinite ease-in-out;
+  transition: color 0.3s;
+}
+
+#secret-amp:hover {
+  color: var(--gold);
+}
+
+@keyframes pulseGold {
+  0%, 100% { text-shadow: 0 0 0px transparent; transform: scale(1); }
+  50% { text-shadow: 0 0 10px var(--gold); transform: scale(1.05); }
+}
+
+/* =====================
+   EASTER EGG: CHAMPAGNE FOUNTAIN & SHAKE
+===================== */
+.champagne-glass {
+  position: fixed;
+  bottom: -100px;
+  font-size: 2.5rem;
+  pointer-events: none;
+  z-index: 99999;
+  animation: shootUp 3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes shootUp {
+  0% { transform: translateY(0) rotate(0deg) scale(0.5); opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(-110vh) rotate(360deg) scale(1.5); opacity: 0; }
+}
+
+.party-shake {
+  animation: screenShake 0.4s ease-in-out infinite;
+}
+
+@keyframes screenShake {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(2px, 2px) rotate(0.5deg); }
+  50% { transform: translate(-2px, -2px) rotate(-0.5deg); }
+  75% { transform: translate(-2px, 2px) rotate(0deg); }
+}
+
 /* ---------- TABLET ---------- */
 @media (max-width: 820px) {
   .nav-links {

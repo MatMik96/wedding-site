@@ -9,22 +9,20 @@
 
  const CAT_SPIRITS = {
   aslak: {
-    images: [
-      "/images/Aslak1.png",
-      "/images/Aslak2.png",
-      "/images/Aslak3.png"
-    ],
+    images: ["/images/Aslak1.png", 
+             "/images/Aslak2.png", 
+             "/images/Aslak3.png"],
     imageIndex: 0,
-    messages: ["Aslak var her 🐾", "Mjav…", "Jeg holder øje med jer"]
+    // Aslak hints at typing "skål"
+    messages: ["Aslak var her 🐾", "Jeg holder øje med jer", "Kan du stave til S-K-Å-L?"]
   },
   dracula: {
-    images: [
-      "/images/Dracula1.png",
-      "/images/Dracula2.png",
-      "/images/Dracula3.png"
-    ],
+    images: ["/images/Dracula1.png",
+             "/images/Dracula2.png", 
+             "/images/Dracula3.png"],
     imageIndex: 0,
-    messages: ["Dracula våger…", "I er ikke alene", "Mørket ser alt"]
+    // Dracula hints at tapping the "&"
+    messages: ["Dracula våger…", "Mørket ser alt", "Hemmeligheden ligger i tegnet mellem dem..."]
   }
 };
 

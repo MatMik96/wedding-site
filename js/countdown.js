@@ -1,6 +1,12 @@
 const weddingDate = new Date("2026-08-21T16:00:00+02:00");
 
+// We add a global flag so other scripts can pause the countdown
+window.isEasterEggActive = false; 
+
 function updateCountdown() {
+  // If the Easter egg is running, stop updating the real time!
+  if (window.isEasterEggActive) return; 
+
   const now = new Date();
   const diff = weddingDate.getTime() - now.getTime();
 
