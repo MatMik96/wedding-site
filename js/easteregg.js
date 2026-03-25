@@ -4,6 +4,7 @@ console.log("Easter egg script er indlæst - Nu med skattekort!");
 window.addEventListener("componentsLoaded", () => {
   console.log("Skattekort aktiveret!");
   setupTreasureMap();
+  setupSummerGuarantee();
 });
 
 // ==========================================
@@ -181,4 +182,46 @@ function shootChampagneFountain() {
       setTimeout(() => glass.remove(), 3500);
     }, i * 60); 
   }
+}
+
+// ==========================================
+// THE SUMMER GUARANTEE EFFECT
+// ==========================================
+function setupSummerGuarantee() {
+  const umbrella = document.getElementById("secret-umbrella");
+  const body = document.body;
+
+  if (!umbrella || !body) return;
+
+  umbrella.addEventListener("click", () => {
+    // Forhindrer at den trigger flere gange, mens solen allerede skinner
+    if (body.classList.contains("solar-mode")) return; 
+
+    // 1. Ryst skærmen let
+    body.classList.add("party-shake");
+    setTimeout(() => {
+      body.classList.remove("party-shake");
+    }, 400);
+
+    // 2. Skift til solskins-tema!
+    body.classList.add("solar-mode");
+
+    // 3. Vis bekræftelsen på skærmen
+    const message = document.createElement("div");
+    message.id = "sun-message";
+    message.textContent = "☀️ Solskin garanteret! 🥂";
+    body.appendChild(message);
+
+    // Fjern beskeden blidt efter 5 sekunder
+    setTimeout(() => {
+      message.style.opacity = "0";
+      message.style.transition = "opacity 0.6s ease";
+      setTimeout(() => message.remove(), 600);
+    }, 8000);
+
+    // 4. NYT: Lad vejret vende tilbage til normalen efter 12 sekunder
+    setTimeout(() => {
+      body.classList.remove("solar-mode");
+    }, 12000);
+  });
 }

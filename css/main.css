@@ -751,3 +751,45 @@ body {
     padding: 0.22rem 0.35rem;
   }
 }
+
+/* =====================
+   EASTER EGG 3: SOMMER-GARANTI
+==================== */
+#secret-umbrella {
+  transition: transform 0.3s ease;
+}
+
+#secret-umbrella:hover {
+  transform: scale(1.4) rotate(-15deg);
+  color: var(--accent);
+}
+
+/* Det gyldne, varme solskins-tema */
+body.solar-mode {
+  background-color: #fcefdc !important; /* Varm creme farve */
+  background-image: linear-gradient(to bottom, rgba(255, 239, 219, 0.7), rgba(255, 239, 219, 0.9)), url("../images/baggrund.png") !important;
+  transition: background-color 2.5s ease, background-image 2.5s ease;
+}
+
+/* Pop-down besked */
+#sun-message {
+  position: fixed;
+  top: 10vh;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1rem 2rem;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--text-main);
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+  z-index: 10000;
+  font-family: "Great Vibes", cursive;
+  font-size: 2.2rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  animation: popDown 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes popDown {
+  0% { top: -10vh; opacity: 0; }
+  100% { top: 10vh; opacity: 1; }
+}

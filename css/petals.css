@@ -30,3 +30,27 @@
     opacity: 0.85;
   }
 }
+
+/* =====================
+   SOLAR MODE PETAL SWAP
+==================== */
+body.solar-mode .petal {
+  /* Skjul det normale SVG billede og slå blur fra */
+  background-image: none !important; 
+  filter: none !important;
+  opacity: 1 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Lav dem om til små sole */
+body.solar-mode .petal::after {
+  content: "☀️";
+  font-size: 1.2rem;
+}
+
+/* Gør halvdelen af dem til margueritter for variation */
+body.solar-mode .petal:nth-of-type(odd)::after {
+  content: "🌼";
+}
