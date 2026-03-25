@@ -68,7 +68,7 @@ function startPetals() {
   /* ---------- Responsive Spawn Rate ---------- */
 
   const baseWidth = 1400;
-  const baseInterval = 800;
+  const baseInterval = 1200; // reduce interval for more petals on larger screens
 
   const widthFactor = window.innerWidth / baseWidth;
   const interval = baseInterval / Math.max(0.5, widthFactor);

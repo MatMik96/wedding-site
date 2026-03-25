@@ -58,14 +58,11 @@ body {
   align-items: center;
 }
 
+/* Updated Logo Container */
 .logo {
-  font-family: "Playfair Display", serif;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  font-size: 0.9rem;
+  display: block;
   text-decoration: none;
-  color: var(--text-main);
+  width: 80px; /* This controls the actual size of your logo */
 }
 
 .nav-links {
@@ -73,6 +70,12 @@ body {
   display: flex;
   gap: 1.2rem;
   align-items: center;
+}
+
+.logo img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .nav-links a {
@@ -525,6 +528,11 @@ body {
   .hero-content {
     margin-top: 12vh; /* tablet */
   }
+
+  .logo {
+    width: 70px; /* Slightly smaller for mobile screens */
+    margin-bottom: 0.5rem;
+  }
 }
 
 /* ===== Sebber Kloster “story” card ===== */
@@ -611,7 +619,7 @@ body {
 /* =====================
    PHONE RESPONSIVE
 ===================== */
-@media (max-width: 650px) {
+@media (max-width: 700px) {
   /* iOS Safari often hates background-attachment: fixed */
   .hero {
     background-image: url("/images/baggrundSmall.png");
