@@ -527,9 +527,9 @@ body {
   transition: color 0.3s;
 }
 
-#secret-amp:hover {
+/* #secret-amp:hover {
   color: var(--gold);
-}
+} */
 
 @keyframes pulseGold {
   0%, 100% { text-shadow: 0 0 0px transparent; transform: scale(1); }
@@ -792,4 +792,25 @@ body.solar-mode {
 @keyframes popDown {
   0% { top: -10vh; opacity: 0; }
   100% { top: 10vh; opacity: 1; }
+}
+
+/* =====================
+   MOBILE FIXES (Hastighed & Cursor)
+===================== */
+body {
+  /* Fjerner den irriterende grå/blå blink-effekt når man tapper på skærmen på mobil */
+  -webkit-tap-highlight-color: transparent; 
+}
+
+/* Forhindrer at telefonen sætter en cursor eller prøver at markere overskrifter og layout */
+h1, h2, h3, .hero-kicker, .hero-names, .nav, .place-lead, .section-title {
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+}
+
+/* Vi lader almindelig tekst i kasserne være markerbar, så gæster stadig kan kopiere adresser og toastmaster-numre! */
+.card p, .place-facts, .place-details {
+  user-select: text;
+  -webkit-user-select: text;
 }
