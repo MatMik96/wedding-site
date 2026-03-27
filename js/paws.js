@@ -22,7 +22,8 @@
              "/images/Dracula3.png"],
     imageIndex: 0,
     // Dracula hints at tapping the "&"
-    messages: ["Dracula våger…", "Mørket ser alt", "Hemmeligheden ligger i tegnet mellem dem..."]
+    //messages: ["Dracula våger…", "Mørket ser alt", "Hemmeligheden ligger i tegnet mellem dem..."]
+      messages: ["Hvem skal være min fars best man?", "Hvem skal være min fars best man?", "Måske Havi???"]
   }
 };
 

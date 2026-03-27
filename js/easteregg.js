@@ -3,59 +3,9 @@ console.log("Easter egg script er indlæst - Nu med skattekort!");
 // FIX: Listen on the 'window' so it actually hears the signal!
 window.addEventListener("componentsLoaded", () => {
   console.log("Skattekort aktiveret!");
-  setupTreasureMap();
+  setupCatMasterplan();
   setupSummerGuarantee();
 });
-
-// ==========================================
-// THE TREASURE MAP EFFECT (Bulletproof)
-// ==========================================
-function setupTreasureMap() {
-  let mapClickCount = 0;
-  let mapTimeout;
-  let revertTimeout; // New variable to hold the revert timer
-
-  document.addEventListener("click", (e) => {
-    const trigger = e.target.closest("#secret-map-trigger");
-    
-    if (trigger) {
-      mapClickCount++;
-
-      clearTimeout(mapTimeout);
-      mapTimeout = setTimeout(() => { mapClickCount = 0; }, 600); 
-
-      if (mapClickCount >= 2) { 
-        const mapContainer = document.getElementById("magic-map-container");
-        
-        if (mapContainer && !mapContainer.classList.contains("show-treasure")) {
-          // TURN ON MAGIC MAP
-          mapContainer.classList.add("show-treasure");
-          trigger.classList.remove("hint-pulse");
-          
-          // Clear any existing revert timer just in case
-          clearTimeout(revertTimeout);
-          
-          // TURN OFF MAGIC MAP AFTER 12 SECONDS
-          revertTimeout = setTimeout(() => {
-            mapContainer.classList.remove("show-treasure");
-          }, 12000); 
-        }
-        
-        mapClickCount = 0; 
-      }
-    }
-  });
-
-  // Small hint: After 8 seconds, the title starts glowing
-  setTimeout(() => {
-    const trigger = document.getElementById("secret-map-trigger");
-    const mapContainer = document.getElementById("magic-map-container");
-    
-    if (trigger && mapContainer && !mapContainer.classList.contains("show-treasure")) {
-      trigger.classList.add("hint-pulse");
-    }
-  }, 8000);
-}
 
 // ==========================================
 // 1. DESKTOP: The Secret Typewriter (Skål)
@@ -175,7 +125,9 @@ function shootChampagneFountain() {
       glass.className = "champagne-glass";
       glass.textContent = Math.random() > 0.5 ? "🥂" : "🍾"; 
       
-      glass.style.left = `${Math.random() * 95}vw`;
+      glass.style.left = `${Math.random() * 80 + 10}vw`; // Starter lidt mere på midten
+      glass.style.setProperty('--drift', `${Math.random() * 300 - 150}px`); // Svæver tilfældigt til højre/venstre
+
       glass.style.animationDuration = `${Math.random() * 1.5 + 1.5}s`; 
       
       document.body.appendChild(glass);
@@ -223,5 +175,24 @@ function setupSummerGuarantee() {
     setTimeout(() => {
       body.classList.remove("solar-mode");
     }, 12000);
+  });
+}
+
+// ==========================================
+// THE CAT MASTERPLAN (3D FLIP)
+// ==========================================
+function setupCatMasterplan() {
+  // Vi lytter på hele dokumentet, så det virker selvom map.html loades et kvart sekund senere
+  document.addEventListener("click", (e) => {
+    // Tjekker om de klikkede på (eller indeni) pote-triggeren
+    const trigger = e.target.closest("#secret-paw-trigger");
+    
+    if (trigger) {
+      const container = document.getElementById("cat-map-container");
+      if (container) {
+        // Vender kortet!
+        container.classList.toggle("flipped");
+      }
+    }
   });
 }
