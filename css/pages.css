@@ -300,3 +300,55 @@
   .cat-plan-content { padding: 1rem; }
   .map-back { padding: 1rem; }
 }
+
+/* =====================
+   PROGRAM / TIDSLINJE STYLING (UDEN BULLETS)
+===================== */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin: 1.5rem auto 0.5rem auto;
+  max-width: 480px; /* Holder programmet pænt centreret på store skærme */
+}
+
+.timeline-item {
+  display: flex;
+  align-items: baseline; /* Sørger for at teksten flugter i bunden af linjen */
+  text-align: left;
+  border-bottom: 1px solid rgba(201, 164, 90, 0.2); /* Meget tynd og elegant adskiller-linje */
+  padding-bottom: 0.8rem;
+}
+
+/* Fjerner stregen under det allersidste punkt i kassen */
+.timeline-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.timeline .time {
+  font-family: "Playfair Display", serif;
+  font-weight: 600;
+  color: var(--accent); /* Jeres temafarve */
+  min-width: 90px; /* Giver god plads til "Fra 16:00" */
+  font-size: 1.1rem;
+}
+
+.timeline .desc {
+  flex: 1;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-main);
+  opacity: 0.9;
+}
+
+/* Mobil-optimering til små skærme (f.eks. iPhone SE) */
+@media (max-width: 400px) {
+  .timeline .time {
+    min-width: 75px;
+    font-size: 1rem;
+  }
+  .timeline .desc {
+    font-size: 0.85rem;
+  }
+}

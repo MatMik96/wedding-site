@@ -22,8 +22,7 @@
              "/images/Dracula3.png"],
     imageIndex: 0,
     // Dracula hints at tapping the "&"
-    //messages: ["Dracula våger…", "Mørket ser alt", "Hemmeligheden ligger i tegnet mellem dem..."]
-      messages: ["Hvem skal være min fars best man?", "Hvem skal være min fars best man?", "Måske Havi???"]
+    messages: ["Dracula våger…", "Mørket ser alt", "Hemmeligheden ligger i tegnet mellem dem..."]
   }
 };
 
@@ -188,8 +187,8 @@ function showCatSpirit(catId) {
   const pageX = e.pageX;
   const pageY = e.pageY - 40;
 
-  // 1/3 chance cat appears
-  if (!chance(0.33)) {
+  // 1/2 chance cat appears
+  if (!chance(0.5)) {
     const failText = FAIL_MESSAGES[Math.floor(Math.random() * FAIL_MESSAGES.length)];
     showMessage(catId, failText, pageX, pageY);
     return;
