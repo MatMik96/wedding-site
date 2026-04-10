@@ -696,24 +696,62 @@ body {
 /* =====================
    ELMER MODE: HACKER & BLACKOUT
 ===================== */
+/* =====================
+   ELMER MODE: HACKER & BLACKOUT
+===================== */
 #elmer-console {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-  background: #000; color: #00ff00; font-family: 'Courier New', monospace;
-  z-index: 999999; padding: 20px; display: none; overflow: hidden;
+  background: #050505; color: #00ff00; 
+  font-family: 'Courier New', Courier, monospace;
+  z-index: 999999; padding: 2rem; display: none; overflow-y: auto;
   font-size: 1.1rem; line-height: 1.4;
+  text-shadow: 0 0 6px #00ff00; /* Giver teksten en ægte neon-glow */
+  box-sizing: border-box;
 }
 
-/* BLACKOUT MODE */
+/* Usynlige 'scan-lines' så det ligner en gammel kasse-skærm */
+#elmer-console::after {
+  content: " "; display: block; position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+  z-index: 2; background-size: 100% 3px; pointer-events: none;
+}
+
+/* Den blinkende grønne hacker-cursor */
+.blinking-cursor {
+  animation: 1s blink step-end infinite;
+  display: inline-block;
+  width: 12px; height: 1.2rem;
+  background-color: #00ff00;
+  vertical-align: bottom;
+  margin-left: 5px;
+  box-shadow: 0 0 10px #00ff00;
+}
+
+@keyframes blink { 
+  0%, 100% { opacity: 1; } 
+  50% { opacity: 0; } 
+}
+
+/* Kæmpe advarsel til sidst */
+.hack-success {
+  color: #00ff00; text-align: center; margin-top: 3rem;
+  font-size: 2.5rem; font-weight: bold;
+  animation: flashWarning 0.4s infinite alternate;
+}
+
+@keyframes flashWarning { 
+  0% { opacity: 1; color: #fff; text-shadow: 0 0 20px #00ff00; } 
+  100% { opacity: 0.6; color: #00ff00; } 
+}
+
+/* BLACKOUT MODE (Som før) */
 body.elmer-active {
-  background: #000 !important;
-  color: #fff !important;
-  cursor: none; /* Skjuler musen, da vi bruger spotlight */
+  background: #000 !important; color: #fff !important; cursor: none;
 }
-
-/* Spotlight-effekten (Ligger over alt andet, undtagen console) */
 .spotlight {
   position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-  background: radial-gradient(circle 140px at var(--x) var(--y), transparent 0%, rgba(0,0,0,0.99) 100%);
+  background: radial-gradient(circle 140px at var(--x, 50vw) var(--y, 50vh), transparent 0%, rgba(0,0,0,0.93) 100%);
   pointer-events: none; z-index: 9999;
 }
 

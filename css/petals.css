@@ -54,3 +54,36 @@ body.solar-mode .petal::after {
 body.solar-mode .petal:nth-of-type(odd)::after {
   content: "🌼";
 }
+
+/* =====================
+   ELMER HACK: SKIFT KRONBLADE TIL LEGETØJ
+===================== */
+
+/* Når 'elmer-active' er på body, skjuler vi rosenblads-billedet */
+body.elmer-active .petal {
+  background-image: none !important; 
+  /* Fjerner den bløde blur/shadow fra rosenbladene, så emojis står skarpt */
+  filter: none !important; 
+  /* Sørger for de altid er synlige (nogle kronblade fader normalt ud) */
+  opacity: 0.9 !important; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Sæt ketcher/tennisbold ind som standard i stedet for billedet */
+body.elmer-active .petal::after {
+  content: "🎾"; /* Ketcher og bold */
+  font-size: 1.8rem; /* Gør dem lidt større, så de er nemme at se */
+  line-height: 1;
+}
+
+/* Gør halvdelen af dem til kødben for variation (bruger :nth-child(even)) */
+body.elmer-active .petal:nth-child(even)::after {
+  content: "🦴"; /* Kødben */
+}
+
+/* Hvis du vil have endnu mere variation, kan du lave hver 3. til en hund */
+body.elmer-active .petal:nth-child(3n)::after {
+  content: "🐶"; /* Hundehoved */
+}

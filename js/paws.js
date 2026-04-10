@@ -203,10 +203,19 @@ function showCatSpirit(catId) {
      SPAWN TRAILS
   ===================== */
 
+  /* =====================
+     SPAWN TRAILS
+  ===================== */
+
+  /* =====================
+     SPAWN TRAILS
+  ===================== */
+
   function spawnTrail(catIndex) {
     let catId = "aslak";
     if (catIndex === 1) catId = "dracula";
     if (catIndex === 2) catId = "elmer";
+    
     const steps = Math.floor(random(6, 12));
 
     let x = random(80, window.innerWidth - 120);
@@ -214,14 +223,25 @@ function showCatSpirit(catId) {
 
     let angle = random(0, Math.PI * 2);
     const turnStrength = random(0.25, 1.45);
-    const baseStepSize = random(26, 38);
+    
+    // FIX: Elmers skridtlængde gøres større!
+    let baseStepSize = random(26, 38); // Kattenes normale skridt
+    if (catId === "elmer") {
+      baseStepSize = random(38, 55); // Elmers lange hvalpe-skridt
+    }
+    
     const baseDelay = random(160, 720);
 
     let delayAccum = 0;
     let left = true;
 
     for (let i = 0; i < steps; i++) {
-      const lateral = (left ? -1 : 1) * random(3, 7);
+      // Lateral-justering (hvor meget poten svinger til højre/venstre for midten)
+      // Elmer svinger også lidt mere ud til siderne, da hans poter er bredere
+      let lateralSwing = random(3, 7);
+      if (catId === "elmer") lateralSwing = random(6, 11);
+      
+      const lateral = (left ? -1 : 1) * lateralSwing;
       const stepX = x + Math.cos(angle + Math.PI / 2) * lateral;
       const stepY = y + Math.sin(angle + Math.PI / 2) * lateral;
 

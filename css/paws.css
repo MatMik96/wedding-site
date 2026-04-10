@@ -223,15 +223,15 @@
    ELMERS PAWS (Overskriver kattepoterne)
 ===================== */
 .paw-print[data-cat="elmer"] {
-  background-image: url("../images/dog-print.png");
-  width: 45px; /* Lidt større end kattene */
-  height: 45px;
+  background-image: url("../images/dog-print2.png");
+  width: 35px; /* Lidt større end kattene */
+  height: 35px;
 }
 
 /* Elmers glow farve (valgfrit, men gør ham unik) */
-.paw-print[data-cat="elmer"].paw-glow::before {
-  background: radial-gradient(circle, rgba(200, 255, 200, 0.9) 0%, rgba(100, 255, 100, 0.4) 40%, transparent 70%);
-}
+/* .paw-print[data-cat="elmer"].paw-glow::before {
+  background: radial-gradient(circle, rgba(255, 252, 200, 0.9) 0%, rgba(100, 255, 100, 0.4) 40%, transparent 70%);
+} */
 
 
 /* =====================

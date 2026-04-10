@@ -188,6 +188,9 @@ function setupCatMasterplan() {
 // ==========================================
 // ELMER TAKE-OVER (MØRKLÆGNING + HVALPE-LOGIK)
 // ==========================================
+// ==========================================
+// ELMER TAKE-OVER (MØRKLÆGNING + HVALPE-LOGIK)
+// ==========================================
 function setupElmerUltimate() {
   const trigger = document.getElementById("elmer-trigger");
   if (!trigger) return;
@@ -195,45 +198,98 @@ function setupElmerUltimate() {
   trigger.addEventListener("click", () => {
     if (document.body.classList.contains("elmer-active")) return;
 
-    // HACKER TERMINAL
+    // 1. Opret konsollen
     const consoleDiv = document.createElement("div");
     consoleDiv.id = "elmer-console";
     document.body.appendChild(consoleDiv);
     consoleDiv.style.display = "block";
 
-    const logs = [
-      "> INITIATING SYSTEM OVERRIDE...",
-      "> IDENTIFICERER BRUGER: ELMER_THE_AUSSIE",
-      "> STATUS: 5 MÅNEDER GAMMEL - MAX ENERGI",
-      "> ANALYSERER KATTE-DATA...",
-      "> FEJL: FOR MANGE KATTE FUNDET.",
-      "> SLETTER KATTE-DOMINANS... [VUF!]",
-      "> INDSÆTTER HVALPE-LOGIK...",
-      "> SYSTEM OVERTAGET. FIND ELMER I MØRKET!"
-    ];
+    const terminalText = document.createElement("div");
+    consoleDiv.appendChild(terminalText);
 
-    let i = 0;
-    const interval = setInterval(() => {
-      if (i < logs.length) {
-        const line = document.createElement("p");
-        line.textContent = logs[i];
-        consoleDiv.appendChild(line);
-        consoleDiv.scrollTop = consoleDiv.scrollHeight;
-        i++;
-      } else {
-        clearInterval(interval);
-        setTimeout(() => {
-          consoleDiv.style.opacity = "0";
-          consoleDiv.style.transition = "opacity 1.5s ease";
-          setTimeout(() => {
-            consoleDiv.remove();
-            startElmerMode();
-          }, 1500);
-        }, 2000);
+    // 2. Den blinkende cursor
+    const cursor = document.createElement("span");
+    cursor.className = "blinking-cursor";
+    consoleDiv.appendChild(cursor);
+
+    // HACKER-FUNKTION: Skriver teksten bogstav for bogstav
+    async function typeLine(text, speed = 25) {
+      const p = document.createElement("p");
+      p.style.margin = "0.2rem 0";
+      terminalText.appendChild(p);
+      consoleDiv.scrollTop = consoleDiv.scrollHeight; // Scroll ned automatisk
+
+      for (let i = 0; i < text.length; i++) {
+        p.textContent += text.charAt(i);
+        // Tilføjer en mikro-forsinkelse der svinger lidt, så det føles som om en skriver
+        await new Promise(r => setTimeout(r, speed + Math.random() * 20));
       }
-    }, 1200); 
+      await new Promise(r => setTimeout(r, 100)); // Lille pause ved linjeskift
+    }
+
+    // HACKER-FUNKTION: Lynhurtig data-dump for at virke prof
+    async function rapidGibberish(lines) {
+      for(let i=0; i<lines; i++) {
+        const p = document.createElement("p");
+        p.style.opacity = "0.6"; p.style.fontSize = "0.9rem"; p.style.margin = "0";
+        const hex = Math.floor(Math.random()*16777215).toString(16).toUpperCase();
+        const status = Math.random() > 0.5 ? 'OK' : 'BYPASSED';
+        p.textContent = `[KERNEL_HOOK] 0x${hex}00F ... ${status}`;
+        terminalText.appendChild(p);
+        consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        await new Promise(r => setTimeout(r, 30)); // Kører absurd hurtigt
+      }
+      terminalText.appendChild(document.createElement("br"));
+    }
+
+    // SELVE HACKER-FILMEN KØRES HER
+    async function runHackSequence() {
+      // Fase 1: Lynhurtig data-dump (ser sejt ud)
+      await rapidGibberish(18);
+      
+      // Fase 2: Elmers Kommandoer
+      const logs = [
+        "> INITIATING SYSTEM OVERRIDE...",
+        "> BYPASSING FIREWALL... [SUCCESS]",
+        "> IDENTIFICERER BRUGER: ELMER_THE_AUSSIE",
+        "> KØRER HVALPE_PROTOKOL_V2.exe",
+        "> ANALYSERER KATTE-DATA PÅ SERVER...",
+        "> FEJL: FOR MANGE KATTE [ASLAK, DRACULA] FUNDET.",
+        "> SLETTER KATTE-DOMINANS... [VUF!]",
+        "> UPLOADER TENNISBOLDE... 100%",
+        "> SYSTEM OVERTAGET. FIND ELMER I MØRKET!"
+      ];
+
+      for (const log of logs) {
+        await typeLine(log, 20); // Skriver hurtigt
+        await new Promise(r => setTimeout(r, 450)); // Læse-pause mellem linjer
+      }
+
+      // Fase 3: Kæmpe advarsel der blinker!
+      const success = document.createElement("div");
+      success.className = "hack-success";
+      success.innerHTML = "SYSTEM COMPROMISED<br/>DOG MODE ENGAGED";
+      terminalText.appendChild(success);
+      consoleDiv.scrollTop = consoleDiv.scrollHeight;
+
+      await new Promise(r => setTimeout(r, 2200));
+
+      // Fase 4: Slet konsollen og gå i Blackout
+      consoleDiv.style.opacity = "0";
+      consoleDiv.style.transition = "opacity 1.5s ease";
+      setTimeout(() => {
+        consoleDiv.remove();
+        startElmerMode();
+      }, 1500);
+    }
+
+    // Start det hele
+    runHackSequence();
   });
 
+  // ==========================================
+  // BLACKOUT MODE & SPOTLIGHT
+  // ==========================================
   function startElmerMode() {
     const body = document.body;
     body.classList.add("elmer-active");
@@ -246,11 +302,18 @@ function setupElmerUltimate() {
     spot.className = "spotlight";
     body.appendChild(spot);
 
+    // FIX: Håndterer både mus og touch-skærm
     const updateSpot = (e) => {
-      spot.style.setProperty("--x", e.clientX + "px");
-      spot.style.setProperty("--y", e.clientY + "px");
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      
+      spot.style.setProperty("--x", clientX + "px");
+      spot.style.setProperty("--y", clientY + "px");
     };
+    
     window.addEventListener("mousemove", updateSpot);
+    window.addEventListener("touchmove", updateSpot, { passive: true });
+    window.addEventListener("touchstart", updateSpot, { passive: true });
 
     // PLACER ELMER TILFÆLDIGT I MØRKET
     const elmerHidden = document.createElement("img");
@@ -267,6 +330,8 @@ function setupElmerUltimate() {
       spot.remove();
       elmerHidden.remove();
       window.removeEventListener("mousemove", updateSpot);
+      window.removeEventListener("touchmove", updateSpot);
+      window.removeEventListener("touchstart", updateSpot);
       
       alert("Lyset er tændt igen! Men Elmer har efterladt sig spor... Prøv at lede efter dem! 🐾");
       
@@ -274,6 +339,6 @@ function setupElmerUltimate() {
       if (window.startElmerTrails) {
         window.startElmerTrails();
       }
-    }, 20000);
+    }, 10000);
   }
 }
