@@ -3,26 +3,26 @@
   ===================== */
   const isMainPage = document.body.classList.contains("page-home");
 
-  const CATS = 2;
-  const MIN_DELAY = isMainPage ? 9000 : 18000; // minimum amount of time before a cat can start a trail
-  const MAX_DELAY = isMainPage ? 18000 : 30000; // maximum amount of time before a cat can start a trail
+  const CATS = 3; // NU ER DER 3 DYR!
+  const MIN_DELAY = isMainPage ? 9000 : 18000;
+  const MAX_DELAY = isMainPage ? 18000 : 30000;
 
  const CAT_SPIRITS = {
   aslak: {
-    images: ["/images/Aslak1.png", 
-             "/images/Aslak2.png", 
-             "/images/Aslak3.png"],
+    images: ["../images/Aslak1.png", "../images/Aslak2.png", "../images/Aslak3.png"],
     imageIndex: 0,
-    // Aslak hints at typing "skål"
     messages: ["Aslak var her 🐾", "Jeg holder øje med jer", "Kan du stave til S-K-Å-L?"]
   },
   dracula: {
-    images: ["/images/Dracula1.png",
-             "/images/Dracula2.png", 
-             "/images/Dracula3.png"],
+    images: ["../images/Dracula1.png", "../images/Dracula2.png", "../images/Dracula3.png"],
     imageIndex: 0,
-    // Dracula hints at tapping the "&"
     messages: ["Dracula våger…", "Mørket ser alt", "Hemmeligheden ligger i tegnet mellem dem..."]
+  },
+  // TILFØJET: ELMER!
+  elmer: {
+    images: ["../images/Elmer1.png", "../images/Elmer2.png", "../images/Elmer3.png"],
+    imageIndex: 0,
+    messages: ["VUF! Jeg bestemmer nu!", "Er der mere laks?", "Who's a good boy?!", "Kattene er kedelige!"]
   }
 };
 
@@ -39,8 +39,11 @@
 
   const lastPawByCat = {
     aslak: null,
-    dracula: null
+    dracula: null,
+    elmer: null // Tilføjet Elmer
   };
+
+  const activeMessageByCat = { aslak: null, dracula: null, elmer: null }; // Tilføjet Elmer
 
   function preloadCatImages() {
     Object.values(CAT_SPIRITS).forEach(cat => {
@@ -68,9 +71,6 @@ preloadCatImages();
   /* =====================
      UI HELPERS
   ===================== */
-
-  // Keep track of the currently visible message per cat
-const activeMessageByCat = { aslak: null, dracula: null };
 
 function showMessage(catId, text, pageX, pageY) {
   // If there's already a message for this cat, remove it first (no stacking)
@@ -204,7 +204,9 @@ function showCatSpirit(catId) {
   ===================== */
 
   function spawnTrail(catIndex) {
-    const catId = catIndex === 0 ? "aslak" : "dracula";
+    let catId = "aslak";
+    if (catIndex === 1) catId = "dracula";
+    if (catIndex === 2) catId = "elmer";
     const steps = Math.floor(random(6, 12));
 
     let x = random(80, window.innerWidth - 120);
@@ -253,5 +255,19 @@ function showCatSpirit(catId) {
     scheduleNextTrail(catIndex);
   }
 
-  scheduleNextTrail(0);
-  scheduleNextTrail(1);
+  scheduleNextTrail(0); // Aslak
+  scheduleNextTrail(1); // Dracula
+
+  // Hvis Elmer er låst op via Easter Egget, begynder han også at gå ture!
+  window.startElmerTrails = function() {
+    // Sikrer at vi ALDRIG starter mere end ét loop af Elmer, selv hvis koden kaldes igen
+    if (window.elmerIsRunning) return; 
+    window.elmerIsRunning = true;
+    
+    // Starter præcis én rute for Elmer, og respekterer den indbyggede forsinkelse
+    scheduleNextTrail(2); 
+  };
+
+  if (localStorage.getItem("elmerDiscovered") === "true") {
+    window.startElmerTrails();
+  }

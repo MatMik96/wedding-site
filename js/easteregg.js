@@ -1,10 +1,10 @@
-console.log("Easter egg script er indlæst - Nu med skattekort!");
+console.log("Easter egg script er indlæst!");
 
-// FIX: Listen on the 'window' so it actually hears the signal!
+// Samlet opstart af alle easter eggs
 window.addEventListener("componentsLoaded", () => {
-  console.log("Skattekort aktiveret!");
   setupCatMasterplan();
   setupSummerGuarantee();
+  setupElmerUltimate();
 });
 
 // ==========================================
@@ -125,8 +125,8 @@ function shootChampagneFountain() {
       glass.className = "champagne-glass";
       glass.textContent = Math.random() > 0.5 ? "🥂" : "🍾"; 
       
-      glass.style.left = `${Math.random() * 80 + 10}vw`; // Starter lidt mere på midten
-      glass.style.setProperty('--drift', `${Math.random() * 300 - 150}px`); // Svæver tilfældigt til højre/venstre
+      glass.style.left = `${Math.random() * 80 + 10}vw`; 
+      glass.style.setProperty('--drift', `${Math.random() * 300 - 150}px`); 
 
       glass.style.animationDuration = `${Math.random() * 1.5 + 1.5}s`; 
       
@@ -146,32 +146,24 @@ function setupSummerGuarantee() {
   if (!umbrella || !body) return;
 
   umbrella.addEventListener("click", () => {
-    // Forhindrer at den trigger flere gange, mens solen allerede skinner
     if (body.classList.contains("solar-mode")) return; 
 
-    // 1. Ryst skærmen let
     body.classList.add("party-shake");
-    setTimeout(() => {
-      body.classList.remove("party-shake");
-    }, 400);
+    setTimeout(() => body.classList.remove("party-shake"), 400);
 
-    // 2. Skift til solskins-tema!
     body.classList.add("solar-mode");
 
-    // 3. Vis bekræftelsen på skærmen
     const message = document.createElement("div");
     message.id = "sun-message";
     message.textContent = "☀️ Solskin garanteret! 🥂";
     body.appendChild(message);
 
-    // Fjern beskeden blidt efter 5 sekunder
     setTimeout(() => {
       message.style.opacity = "0";
       message.style.transition = "opacity 0.6s ease";
       setTimeout(() => message.remove(), 600);
     }, 8000);
 
-    // 4. NYT: Lad vejret vende tilbage til normalen efter 12 sekunder
     setTimeout(() => {
       body.classList.remove("solar-mode");
     }, 12000);
@@ -182,17 +174,106 @@ function setupSummerGuarantee() {
 // THE CAT MASTERPLAN (3D FLIP)
 // ==========================================
 function setupCatMasterplan() {
-  // Vi lytter på hele dokumentet, så det virker selvom map.html loades et kvart sekund senere
   document.addEventListener("click", (e) => {
-    // Tjekker om de klikkede på (eller indeni) pote-triggeren
     const trigger = e.target.closest("#secret-paw-trigger");
-    
     if (trigger) {
       const container = document.getElementById("cat-map-container");
       if (container) {
-        // Vender kortet!
         container.classList.toggle("flipped");
       }
     }
   });
+}
+
+// ==========================================
+// ELMER TAKE-OVER (MØRKLÆGNING + HVALPE-LOGIK)
+// ==========================================
+function setupElmerUltimate() {
+  const trigger = document.getElementById("elmer-trigger");
+  if (!trigger) return;
+
+  trigger.addEventListener("click", () => {
+    if (document.body.classList.contains("elmer-active")) return;
+
+    // HACKER TERMINAL
+    const consoleDiv = document.createElement("div");
+    consoleDiv.id = "elmer-console";
+    document.body.appendChild(consoleDiv);
+    consoleDiv.style.display = "block";
+
+    const logs = [
+      "> INITIATING SYSTEM OVERRIDE...",
+      "> IDENTIFICERER BRUGER: ELMER_THE_AUSSIE",
+      "> STATUS: 5 MÅNEDER GAMMEL - MAX ENERGI",
+      "> ANALYSERER KATTE-DATA...",
+      "> FEJL: FOR MANGE KATTE FUNDET.",
+      "> SLETTER KATTE-DOMINANS... [VUF!]",
+      "> INDSÆTTER HVALPE-LOGIK...",
+      "> SYSTEM OVERTAGET. FIND ELMER I MØRKET!"
+    ];
+
+    let i = 0;
+    const interval = setInterval(() => {
+      if (i < logs.length) {
+        const line = document.createElement("p");
+        line.textContent = logs[i];
+        consoleDiv.appendChild(line);
+        consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        i++;
+      } else {
+        clearInterval(interval);
+        setTimeout(() => {
+          consoleDiv.style.opacity = "0";
+          consoleDiv.style.transition = "opacity 1.5s ease";
+          setTimeout(() => {
+            consoleDiv.remove();
+            startElmerMode();
+          }, 1500);
+        }, 2000);
+      }
+    }, 1200); 
+  });
+
+  function startElmerMode() {
+    const body = document.body;
+    body.classList.add("elmer-active");
+    
+    // Gemmer at Elmer er fundet, så paws.js fremover altid lader ham gå ture!
+    localStorage.setItem("elmerDiscovered", "true");
+
+    // SPOTLIGHT
+    const spot = document.createElement("div");
+    spot.className = "spotlight";
+    body.appendChild(spot);
+
+    const updateSpot = (e) => {
+      spot.style.setProperty("--x", e.clientX + "px");
+      spot.style.setProperty("--y", e.clientY + "px");
+    };
+    window.addEventListener("mousemove", updateSpot);
+
+    // PLACER ELMER TILFÆLDIGT I MØRKET
+    const elmerHidden = document.createElement("img");
+    elmerHidden.src = "../images/Elmer1.png";
+    elmerHidden.id = "elmer-in-dark";
+    const randomTop = Math.floor(Math.random() * 70) + 10;
+    const randomLeft = Math.floor(Math.random() * 70) + 10;
+    elmerHidden.style.cssText = `position:fixed; top:${randomTop}%; left:${randomLeft}%; width:200px; z-index:9998; pointer-events:none; filter: drop-shadow(0 0 15px rgba(255,255,255,0.3));`;
+    body.appendChild(elmerHidden);
+
+    // LYS TÆNDER IGEN EFTER 20 SEKUNDER
+    setTimeout(() => {
+      body.classList.remove("elmer-active");
+      spot.remove();
+      elmerHidden.remove();
+      window.removeEventListener("mousemove", updateSpot);
+      
+      alert("Lyset er tændt igen! Men Elmer har efterladt sig spor... Prøv at lede efter dem! 🐾");
+      
+      // Kald Elmers gåture fra paws.js!
+      if (window.startElmerTrails) {
+        window.startElmerTrails();
+      }
+    }, 20000);
+  }
 }
