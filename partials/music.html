@@ -7,22 +7,80 @@
     </p>
 
     <div class="card music-card">
+      
       <iframe class="music-card"
         src="https://open.spotify.com/embed/playlist/5pVJKLAUijV7igK491KORz"
         width="100%"
         height="380"
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        loading="lazy">
+        loading="lazy"
+        style="border: none; border-radius: 12px;">
       </iframe>
 
       <div style="margin-top:2rem;">
-        <a href="https://open.spotify.com/playlist/5pVJKLAUijV7igK491KORz"
-           target="_blank"
-           class="btn-primary">
+        <button id="reveal-song-form-btn" class="btn-primary" style="cursor: pointer;">
           Tilføj en sang 🎵
-        </a>
+        </button>
+      </div>
+
+      <style>
+        #song-search-input {
+          width: 100%; padding: 14px 16px; border: 2px solid rgba(201,164,90,0.5);
+          border-radius: 8px; font-family: "Playfair Display", serif; font-size: 1.1rem;
+          background: #ffffff; box-sizing: border-box; transition: all 0.3s ease;
+        }
+        #song-search-input:focus { 
+          outline: none; border-color: #c9a45a; box-shadow: 0 0 8px rgba(201,164,90,0.3); 
+        }
+        #song-suggestions {
+          position: absolute; top: 100%; left: 0; right: 0; background: #ffffff;
+          border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); margin: 8px 0 0 0 !important;
+          padding: 0 !important; list-style: none !important; max-height: 280px; overflow-y: auto;
+          z-index: 99999; border: 1px solid #eaeaea;
+        }
+        #song-suggestions li {
+          padding: 12px 16px; display: flex; align-items: center; gap: 15px; cursor: pointer;
+          border-bottom: 1px solid #f0f0f0; margin: 0 !important;
+        }
+        #song-suggestions li:hover { background: rgba(201,164,90,0.1); }
+        #song-suggestions img { width: 45px; height: 45px; border-radius: 6px; object-fit: cover; }
+        .sugg-title { display: block; font-family: "Playfair Display", serif; font-weight: 600; color: #462a20; font-size: 1.1rem; margin-bottom: 2px; }
+        .sugg-artist { display: block; font-size: 0.85rem; color: rgba(70, 42, 32, 0.7); font-family: sans-serif; }
+      </style>
+
+      <div id="song-form-container" style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(201,164,90,0.3); text-align: left;">
+        
+        <form id="song-request-form" action="https://formspree.io/f/meeveard" method="POST">
+          <p style="margin-bottom: 1.2rem; line-height: 1.5; font-size: 1.05rem;">
+            <strong>Spotify driller lidt med gæsteadgangen! 🙄</strong><br/>
+            Søg på din yndlingssang herunder, så smider vi den direkte ind på playlisten ASAP 🪩
+          </p>
+          
+          <div style="position: relative;">
+            <input type="text" id="song-search-input" name="Sangønske" placeholder="Søg efter sang eller kunstner..." required autocomplete="off" />
+            <ul id="song-suggestions" style="display: none;"></ul>
+          </div>
+
+          <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem; cursor: pointer;">
+            Send sangønske
+          </button>
+        </form>
+
+        <div id="song-success-msg" style="display: none; text-align: center !important; padding: 2rem; background: var(--bg-lighter, #fff9f0); border-radius: 12px; margin-top: 1rem; border: 1px solid rgba(201,164,90,0.2); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+          <div style="font-size: 3rem; margin-bottom: 0.5rem; text-align: center;">🥂</div>
+          <h4 style="color: #c9a45a; margin: 0 0 0.5rem 0; font-family: 'Playfair Display', serif; font-size: 1.5rem; text-align: center;">Tak for det!</h4>
+          
+          <p style="margin: 0 auto 1.5rem auto !important; text-align: center !important; width: 100%; display: block;">
+            Din sang er sendt afsted og lander snart på playlisten.
+          </p>
+          
+          <div style="text-align: center; width: 100%;">
+            <button id="add-another-song-btn" type="button" style="cursor: pointer; padding: 0.6rem 1.2rem; border-radius: 20px; border: 1px solid #c9a45a; background: transparent; color: #c9a45a; font-weight: bold; font-size: 0.9rem;">
+              Tilføj en sang mere 🎵
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-
   </div>
 </section>

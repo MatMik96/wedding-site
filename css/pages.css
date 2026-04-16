@@ -170,6 +170,91 @@
   border-top: 1px solid rgba(201, 164, 90, 0.2);
 }
 
+/* =====================
+   SANG-ØNSKE & LIVE SEARCH
+===================== */
+.fancy-search-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid rgba(201,164,90,0.5);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 1rem;
+  background: #ffffff;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.fancy-search-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(201,164,90,0.2);
+}
+
+.fancy-suggestions {
+  position: absolute;
+  top: 100%; 
+  left: 0; 
+  right: 0;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  margin: 8px 0 0 0 !important;
+  padding: 0 !important;
+  list-style-type: none !important; /* FJERNER DE GRIMME PRIKKER */
+  max-height: 280px;
+  overflow-y: auto;
+  z-index: 99999;
+  border: 1px solid #eaeaea;
+}
+
+.fancy-suggestions li {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  margin: 0 !important;
+  transition: background 0.2s;
+}
+
+.fancy-suggestions li:last-child {
+  border-bottom: none;
+}
+
+.fancy-suggestions li:hover {
+  background: rgba(201,164,90,0.08);
+}
+
+.fancy-suggestions img {
+  width: 45px; 
+  height: 45px;
+  border-radius: 6px;
+  object-fit: cover;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.suggestion-title {
+  display: block;
+  font-family: "Playfair Display", serif;
+  font-weight: 600;
+  color: var(--text-main);
+  font-size: 1.1rem;
+  margin-bottom: 2px;
+}
+
+.suggestion-artist {
+  display: block;
+  font-size: 0.85rem;
+  color: rgba(70, 42, 32, 0.7);
+}
+
+#add-another-song-btn:hover {
+  background: var(--accent);
+  color: #fff !important;
+}
+
 /* Gør det pænt på mobilen (stabler billede under tekst) */
 @media (max-width: 768px) {
   .story-grid {
