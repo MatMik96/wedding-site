@@ -1,8 +1,8 @@
 (() => {
   const CONFIG = {
     FEED_URL: "https://script.google.com/macros/s/AKfycbxMZjMJC2ZUIVjRl6x8UILk9L95e6SSURG4wDf8-zk5fob7eltPLAbpjD79JqTjBQu70Q/exec",
-    BATCH_SIZE: 8,          // smaller = fewer burst requests (helps mobile)
-    BATCH_DELAY_MS: 220
+    BATCH_SIZE: 3,          // smaller = fewer burst requests (helps mobile)
+    BATCH_DELAY_MS: 800      // delay between batches (helps mobile)
   };
 
   const state = {
