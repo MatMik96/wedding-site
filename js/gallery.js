@@ -59,6 +59,11 @@
     a.href = "#";
     el.lightbox.appendChild(a);
     el.downloadBtn = a;
+
+    const hint = document.createElement("div");
+    hint.className = "lb-mobile-hint";
+    hint.textContent = "Tip: Hold nede på billedet for at gemme direkte i Fotos";
+    el.lightbox.appendChild(hint);
   }
 
   function attachEvents() {

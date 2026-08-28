@@ -255,11 +255,23 @@
   color: #fff !important;
 }
 
+.lb-mobile-hint {
+  display: none; /* Skjult på computer */
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  margin-top: 15px;
+  text-align: center;
+  font-style: italic;
+}
+
 /* Gør det pænt på mobilen (stabler billede under tekst) */
 @media (max-width: 768px) {
   .story-grid {
     grid-template-columns: 1fr;
     gap: 1.8rem;
+  }
+  .lb-mobile-hint {
+    display: block; /* Viser tip på mobilen */
   }
 }
 
