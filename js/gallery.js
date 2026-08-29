@@ -63,14 +63,14 @@
     // Knap 1: Til telefonen (Nyt klassenavn)
     const btnWeb = document.createElement("a");
     btnWeb.className = "lb-download-btn"; 
-    btnWeb.innerHTML = "God kvalitet<br><small>(Perfekt til telefonen)</small>";
+    btnWeb.innerHTML = "Download - God kvalitet<br><small>(Perfekt til telefonen)</small>";
     btnWeb.setAttribute("download", "");
     btnWeb.href = "#";
 
     // Knap 2: Til print (Nyt klassenavn)
     const btnPrint = document.createElement("a");
     btnPrint.className = "lb-download-btn"; 
-    btnPrint.innerHTML = "Crazy kvalitet<br><small>(Direkte til print)</small>";
+    btnPrint.innerHTML = "Download - Crazy kvalitet<br><small>(Til print)</small>";
     btnPrint.setAttribute("download", "");
     btnPrint.href = "#";
 
