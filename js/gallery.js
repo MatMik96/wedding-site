@@ -47,23 +47,40 @@
       closeBtn: document.querySelector(".lb-close"),
       downloadBtn: document.querySelector(".lb-download")
     };
+    if (el.lbImage) el.lbImage.referrerPolicy = "no-referrer";
   }
 
-  function ensureDownloadButton() {
-    if (el.downloadBtn) return;
+ function ensureDownloadButton() {
+    if (el.downloadWrapper) return;
 
-    const a = document.createElement("a");
-    a.className = "lb-download";
-    a.textContent = "Download";
-    a.setAttribute("download", "");
-    a.href = "#";
-    el.lightbox.appendChild(a);
-    el.downloadBtn = a;
+    if (el.downloadBtn) el.downloadBtn.remove();
+    const oldHint = document.querySelector('.lb-mobile-hint');
+    if (oldHint) oldHint.remove();
 
-    const hint = document.createElement("div");
-    hint.className = "lb-mobile-hint";
-    hint.textContent = "Tip: Hold nede på billedet for at gemme direkte i Fotos";
-    el.lightbox.appendChild(hint);
+    const wrapper = document.createElement("div");
+    wrapper.className = "lb-download-wrapper";
+
+    // Knap 1: Til telefonen (Nyt klassenavn)
+    const btnWeb = document.createElement("a");
+    btnWeb.className = "lb-download-btn"; 
+    btnWeb.innerHTML = "God kvalitet<br><small>(Perfekt til telefonen)</small>";
+    btnWeb.setAttribute("download", "");
+    btnWeb.href = "#";
+
+    // Knap 2: Til print (Nyt klassenavn)
+    const btnPrint = document.createElement("a");
+    btnPrint.className = "lb-download-btn"; 
+    btnPrint.innerHTML = "Crazy kvalitet<br><small>(Direkte til print)</small>";
+    btnPrint.setAttribute("download", "");
+    btnPrint.href = "#";
+
+    wrapper.appendChild(btnWeb);
+    wrapper.appendChild(btnPrint);
+    el.lightbox.appendChild(wrapper);
+
+    el.downloadWrapper = wrapper;
+    el.downloadWebBtn = btnWeb;
+    el.downloadPrintBtn = btnPrint;
   }
 
   function attachEvents() {
@@ -132,7 +149,8 @@
             thumbUrl: img.thumbUrl,
             fullUrl: img.fullUrl,
             downloadUrl: img.downloadUrl,
-            name: img.name
+            name: img.name,
+            originalDownloadUrl: img.originalDownloadUrl // <--- DET ER DENNE DER MANGLER!
           });
         }
       }
@@ -231,6 +249,7 @@
       const img = document.createElement("img");
       img.loading = "lazy";
       img.decoding = "async";
+      img.referrerPolicy = "no-referrer";
       img.alt = item.name || "Billede";
       img.src = item.thumbUrl;
     
@@ -260,8 +279,24 @@
     el.lbImage.classList.add("swap");
     setTimeout(() => {
       el.lbImage.src = item.fullUrl;
-      el.downloadBtn.href = item.downloadUrl || item.fullUrl;
-      el.downloadBtn.setAttribute("download", item.name || "photo.jpg");
+
+      // Sæt link til den lette version
+      if (el.downloadWebBtn) {
+        el.downloadWebBtn.href = item.downloadUrl || item.fullUrl;
+        el.downloadWebBtn.setAttribute("download", item.name || "photo.jpg");
+      }
+
+      // Sæt link til originalen (og skjul knappen, hvis originalen ikke findes på Drev)
+      if (el.downloadPrintBtn) {
+        if (item.originalDownloadUrl) {
+          el.downloadPrintBtn.href = item.originalDownloadUrl;
+          el.downloadPrintBtn.setAttribute("download", item.name || "photo.jpg");
+          el.downloadPrintBtn.style.display = "inline-block";
+        } else {
+          el.downloadPrintBtn.style.display = "none";
+        }
+      }
+
       el.lbImage.classList.remove("swap");
     }, 120);
 

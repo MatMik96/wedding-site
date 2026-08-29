@@ -14,7 +14,7 @@ function updateCountdown() {
   if (!el) return;
 
   if (diff <= 0) {
-    el.textContent = "Det er bryllupsweekend! 💍";
+    el.textContent = "Tak for en fantastisk weekend! 💍";
     return;
   }
 
