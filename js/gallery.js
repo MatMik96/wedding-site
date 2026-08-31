@@ -60,19 +60,35 @@
     const wrapper = document.createElement("div");
     wrapper.className = "lb-download-wrapper";
 
-    // Knap 1: Til telefonen (Nyt klassenavn)
+    // Knap 1 (Web)
     const btnWeb = document.createElement("a");
     btnWeb.className = "lb-download-btn"; 
-    btnWeb.innerHTML = "Download - God kvalitet<br><small>(Perfekt til telefonen)</small>";
+    const webText = "Download - God kvalitet<br><small>(Perfekt til telefonen)</small>";
+    btnWeb.innerHTML = webText;
     btnWeb.setAttribute("download", "");
     btnWeb.href = "#";
+    
+    // Visuel feedback (Problem 4)
+    btnWeb.addEventListener("click", function() {
+      this.innerHTML = "Starter download...<br><small>(Et øjeblik)</small>";
+      this.style.opacity = "0.7";
+      setTimeout(() => { this.innerHTML = webText; this.style.opacity = "1"; }, 3500);
+    });
 
-    // Knap 2: Til print (Nyt klassenavn)
+    // Knap 2 (Print)
     const btnPrint = document.createElement("a");
     btnPrint.className = "lb-download-btn"; 
-    btnPrint.innerHTML = "Download - Crazy kvalitet<br><small>(Til print)</small>";
+    const printText = "Download - Crazy kvalitet<br><small>(Til print)</small>";
+    btnPrint.innerHTML = printText;
     btnPrint.setAttribute("download", "");
     btnPrint.href = "#";
+    
+    // Visuel feedback (Problem 4)
+    btnPrint.addEventListener("click", function() {
+      this.innerHTML = "Henter tung fil...<br><small>(Et øjeblik)</small>";
+      this.style.opacity = "0.7";
+      setTimeout(() => { this.innerHTML = printText; this.style.opacity = "1"; }, 7000);
+    });
 
     wrapper.appendChild(btnWeb);
     wrapper.appendChild(btnPrint);
@@ -276,29 +292,44 @@
     state.currentIndex = (index + state.filtered.length) % state.filtered.length;
     const item = state.filtered[state.currentIndex];
 
+    // 1. Vis først den lynhurtige komprimerede version og slør den
+    el.lbImage.src = item.thumbUrl; 
     el.lbImage.classList.add("swap");
+
+    // 2. Vi bruger en minimal pause (50ms) for at sikre, at thumbUrl er registreret,
+    // før vi beder browseren overskrive den med fullUrl
     setTimeout(() => {
+      // Så snart det tunge billede lander, forsvinder sløringen
+      el.lbImage.onload = () => {
+        el.lbImage.classList.remove("swap");
+      };
+      // SIKKERHEDSNET: Hvis billedet fejler eller afvises af cachen, fjerner vi sløringen alligevel
+      el.lbImage.onerror = () => {
+        el.lbImage.classList.remove("swap");
+      };
+      
+      // Sæt kilden til at være høj opløsning
       el.lbImage.src = item.fullUrl;
+    }, 50);
 
-      // Sæt link til den lette version
-      if (el.downloadWebBtn) {
-        el.downloadWebBtn.href = item.downloadUrl || item.fullUrl;
-        el.downloadWebBtn.setAttribute("download", item.name || "photo.jpg");
+    // Opsæt download-link til web-kvalitet
+    if (el.downloadWebBtn) {
+      el.downloadWebBtn.href = item.downloadUrl || item.fullUrl;
+      el.downloadWebBtn.setAttribute("download", item.name || "photo.jpg");
+    }
+
+    // Vis KUN print-kvalitet, hvis vi er på "Fotograf"-fanen
+    if (el.downloadPrintBtn) {
+      if (item.originalDownloadUrl && state.activeDay === "fotograf") {
+        el.downloadPrintBtn.href = item.originalDownloadUrl;
+        el.downloadPrintBtn.setAttribute("download", item.name || "photo.jpg");
+        
+        // Ret denne linje fra "flex" til "inline-block":
+        el.downloadPrintBtn.style.display = "inline-block"; 
+      } else {
+        el.downloadPrintBtn.style.display = "none";
       }
-
-      // Sæt link til originalen (og skjul knappen, hvis originalen ikke findes på Drev)
-      if (el.downloadPrintBtn) {
-        if (item.originalDownloadUrl) {
-          el.downloadPrintBtn.href = item.originalDownloadUrl;
-          el.downloadPrintBtn.setAttribute("download", item.name || "photo.jpg");
-          el.downloadPrintBtn.style.display = "inline-block";
-        } else {
-          el.downloadPrintBtn.style.display = "none";
-        }
-      }
-
-      el.lbImage.classList.remove("swap");
-    }, 120);
+    }
 
     el.lightbox.classList.add("active");
   }

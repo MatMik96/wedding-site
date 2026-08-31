@@ -347,10 +347,11 @@ body {
   opacity: 0.8;
 }
 
-/* Lightbox image swap fade */
+/* Moderne "loading" effekt til lightboxen */
 .lb-image.swap {
-  opacity: 0.25;
-  transition: opacity 120ms ease;
+  opacity: 0.6;
+  filter: blur(8px);
+  transition: all 0.3s ease;
 }
 
 .gallery-filter-block{
